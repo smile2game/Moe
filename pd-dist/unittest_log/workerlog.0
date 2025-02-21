@@ -1,0 +1,9 @@
+W0221 04:25:12.382728  6288 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 7.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0221 04:25:12.383682  6288 gpu_resources.cc:164] device: 0, cuDNN Version: 8.9.
+W0221 04:25:15.081292  6288 dist_tensor.cc:52] WARNING: Tensor dim 1 is already sharded on mesh dim0. Sharding a tensor dim with multiple mesh dim is not supported yet.
+dist_attr is {process_mesh: {shape: [2], process_ids: [0,1], dim_names: [x]}, dims_mappings: [0,-1], batch_dim: 0, chunk_id: 0, skip_check_mesh: 0, dynamic_dims: [0,0], annotated: [dims_mapping: 1,process_mesh: 1], partial: [].}
+I0221 04:25:15.082871  6288 tcp_utils.cc:185] The server starts to listen on IP_ANY:60388; setting synclog to 2048
+I0221 04:25:15.083195  6288 tcp_utils.cc:134] Successfully connected to 10.44.14.13:60388
+dist_attr is {process_mesh: {shape: [2], process_ids: [0,1], dim_names: [x]}, dims_mappings: [-1,0], batch_dim: 0, chunk_id: 0, skip_check_mesh: 0, dynamic_dims: [0,0], annotated: [dims_mapping: 1,process_mesh: 1], partial: [].}
+placements is [Replicate(), Replicate()]
+I0221 04:25:15.990597  6340 tcp_store.cc:292] receive shutdown event and so quit from MasterDaemon run loop

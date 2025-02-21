@@ -1,0 +1,11 @@
+index,uuid,driver_version,name,gpu_serial,display_active,display_mode
+0,GPU-9ff3972f-f9f1-383b-0a47-71f080519c51,525.125.06,Tesla V100-SXM2-32GB,1422319022616,Disabled,Enabled
+1,GPU-84f4d753-41c8-3798-f332-91fa80abfc24,525.125.06,Tesla V100-SXM2-32GB,1422319022557,Disabled,Enabled
+
+pid,process_name,gpu_uuid,gpu_name,used_memory
+
+index,utilization_gpu,memory_total,memory_used,memory_free,timestamp
+0,0,32768,3,32497,2025/02/21 04:25:10.612
+1,0,32768,3,32497,2025/02/21 04:25:10.612
+0,7,32768,1007,31493,2025/02/21 04:25:15.651
+1,0,32768,1007,31493,2025/02/21 04:25:15.651
