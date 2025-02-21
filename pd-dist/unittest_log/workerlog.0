@@ -1,103 +1,6 @@
-W0221 04:25:12.382728  6288 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 7.0, Driver API Version: 12.0, Runtime API Version: 11.8
-W0221 04:25:12.383682  6288 gpu_resources.cc:164] device: 0, cuDNN Version: 8.9.
-W0221 04:25:15.081292  6288 dist_tensor.cc:52] WARNING: Tensor dim 1 is already sharded on mesh dim0. Sharding a tensor dim with multiple mesh dim is not supported yet.
-dist_attr is {process_mesh: {shape: [2], process_ids: [0,1], dim_names: [x]}, dims_mappings: [0,-1], batch_dim: 0, chunk_id: 0, skip_check_mesh: 0, dynamic_dims: [0,0], annotated: [dims_mapping: 1,process_mesh: 1], partial: [].}
-I0221 04:25:15.082871  6288 tcp_utils.cc:185] The server starts to listen on IP_ANY:60388; setting synclog to 2048
-I0221 04:25:15.083195  6288 tcp_utils.cc:134] Successfully connected to 10.44.14.13:60388
-dist_attr is {process_mesh: {shape: [2], process_ids: [0,1], dim_names: [x]}, dims_mappings: [-1,0], batch_dim: 0, chunk_id: 0, skip_check_mesh: 0, dynamic_dims: [0,0], annotated: [dims_mapping: 1,process_mesh: 1], partial: [].}
-placements is [Replicate(), Replicate()]
-I0221 04:25:15.990597  6340 tcp_store.cc:292] receive shutdown event and so quit from MasterDaemon run loop
-W0221 04:36:10.308156  8406 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 7.0, Driver API Version: 12.0, Runtime API Version: 11.8
-W0221 04:36:10.309017  8406 gpu_resources.cc:164] device: 0, cuDNN Version: 8.9.
-before shard,x is Tensor(shape=[4, 4], dtype=int64, place=Place(gpu:0), stop_gradient=False,
-       [[0 , 1 , 2 , 3 ],
-        [4 , 5 , 6 , 7 ],
-        [8 , 9 , 10, 11],
-        [12, 13, 14, 15]])
-W0221 04:36:13.141386  8406 dist_tensor.cc:52] WARNING: Tensor dim 1 is already sharded on mesh dim0. Sharding a tensor dim with multiple mesh dim is not supported yet.
-dist_attr is {process_mesh: {shape: [2], process_ids: [0,1], dim_names: [x]}, dims_mappings: [0,-1], batch_dim: 0, chunk_id: 0, skip_check_mesh: 0, dynamic_dims: [0,0], annotated: [dims_mapping: 1,process_mesh: 1], partial: [].}
-I0221 04:36:13.142699  8406 tcp_utils.cc:185] The server starts to listen on IP_ANY:52103; setting synclog to 2048
-I0221 04:36:13.142963  8406 tcp_utils.cc:134] Successfully connected to 10.44.14.13:52103
-dist_attr is {process_mesh: {shape: [2], process_ids: [0,1], dim_names: [x]}, dims_mappings: [-1,0], batch_dim: 0, chunk_id: 0, skip_check_mesh: 0, dynamic_dims: [0,0], annotated: [dims_mapping: 1,process_mesh: 1], partial: [].}
-placements is [Replicate(), Replicate()]
-I0221 04:36:16.974586  8491 tcp_store.cc:292] receive shutdown event and so quit from MasterDaemon run loop
-W0221 04:36:30.370824  8740 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 7.0, Driver API Version: 12.0, Runtime API Version: 11.8
-W0221 04:36:30.371709  8740 gpu_resources.cc:164] device: 0, cuDNN Version: 8.9.
-
-
---------------------------------------
-C++ Traceback (most recent call last):
---------------------------------------
-0   paddle::pybind::eager_api_arange(_object*, _object*, _object*)
-1   arange_ad_func(paddle::Tensor const&, paddle::Tensor const&, paddle::Tensor const&, phi::DataType, phi::Place)
-2   paddle::experimental::arange(paddle::Tensor const&, paddle::Tensor const&, paddle::Tensor const&, phi::DataType, phi::Place const&)
-3   paddle::experimental::GetDeviceContextByBackend(paddle::experimental::Backend)
-4   paddle::experimental::DeviceContextPool::Get(phi::Place const&)
-5   phi::DeviceContextPool::Get(phi::Place const&)
-6   std::__future_base::_Deferred_state<std::thread::_Invoker<std::tuple<std::unique_ptr<phi::DeviceContext, std::default_delete<phi::DeviceContext> > (*)(phi::Place const&, bool, int), phi::Place, bool, int> >, std::unique_ptr<phi::DeviceContext, std::default_delete<phi::DeviceContext> > >::_M_complete_async()
-7   std::__future_base::_State_baseV2::_M_do_set(std::function<std::unique_ptr<std::__future_base::_Result_base, std::__future_base::_Result_base::_Deleter> ()>*, bool*)
-8   std::_Function_handler<std::unique_ptr<std::__future_base::_Result_base, std::__future_base::_Result_base::_Deleter> (), std::__future_base::_Task_setter<std::unique_ptr<std::__future_base::_Result<std::unique_ptr<phi::DeviceContext, std::default_delete<phi::DeviceContext> > >, std::__future_base::_Result_base::_Deleter>, std::thread::_Invoker<std::tuple<std::unique_ptr<phi::DeviceContext, std::default_delete<phi::DeviceContext> > (*)(phi::Place const&, bool, int), phi::Place, bool, int> >, std::unique_ptr<phi::DeviceContext, std::default_delete<phi::DeviceContext> > > >::_M_invoke(std::_Any_data const&)
-9   std::unique_ptr<phi::DeviceContext, std::default_delete<phi::DeviceContext> > paddle::platform::CreateDeviceContext<phi::GPUContext>(phi::Place const&, bool, int)
-10  std::enable_if<std::is_same<phi::GPUContext, phi::GPUContext>::value, phi::GPUContext*>::type paddle::platform::ConstructDevCtx<phi::GPUContext>(phi::Place const&, int)
-11  phi::GPUContext::GPUContext(phi::GPUPlace const&, bool, int)
-12  phi::CUDAStream::CUDAStream(phi::Place const&, int, phi::CUDAStream::StreamFlag const&)
-13  phi::backends::gpu::GetGpuStreamPriorityRange()
-
-----------------------
-Error Message Summary:
-----------------------
-FatalError: `Termination signal` is detected by the operating system.
-  [TimeInfo: *** Aborted at 1740112591 (unix time) try "date -d @1740112591" if you are using GNU date ***]
-  [SignalInfo: *** SIGTERM (@0x3e8000021f9) received by PID 8740 (TID 0x7f5623fa3740) from PID 8697 ***]
-
-W0221 04:39:10.243788  9807 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 7.0, Driver API Version: 12.0, Runtime API Version: 11.8
-W0221 04:39:10.245532  9807 gpu_resources.cc:164] device: 0, cuDNN Version: 8.9.
-placements is [Replicate(), Replicate()]
-W0221 05:11:34.171428 12840 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 7.0, Driver API Version: 12.0, Runtime API Version: 11.8
-W0221 05:11:34.172372 12840 gpu_resources.cc:164] device: 0, cuDNN Version: 8.9.
-before shard,x is Tensor(shape=[4, 4], dtype=int64, place=Place(gpu:0), stop_gradient=True,
-       [[0 , 1 , 2 , 3 ],
-        [4 , 5 , 6 , 7 ],
-        [8 , 9 , 10, 11],
-        [12, 13, 14, 15]])
-dist_attr is {process_mesh: {shape: [2,1], process_ids: [0,1], dim_names: [x,y]}, dims_mappings: [-1,-1], batch_dim: 0, chunk_id: 0, skip_check_mesh: 0, dynamic_dims: [0,0], annotated: [dims_mapping: 1,process_mesh: 1], partial: [].}
-after shard,dist_x is Tensor(shape=[4, 4], dtype=int64, place=Place(gpu:0), stop_gradient=True, process_mesh={shape: [2,1], process_ids: [0,1], dim_names: [x,y]}, placements=[Replicate(), Replicate()], GlobalDenseTensor=
-       [[0 , 1 , 2 , 3 ],
-        [4 , 5 , 6 , 7 ],
-        [8 , 9 , 10, 11],
-        [12, 13, 14, 15]])
-placements is [Replicate(), Replicate()]
-dist_attr is {process_mesh: {shape: [1,2], process_ids: [0,1], dim_names: [x,y]}, dims_mappings: [-1,-1], batch_dim: 0, chunk_id: 0, skip_check_mesh: 0, dynamic_dims: [0,0], annotated: [dims_mapping: 1,process_mesh: 1], partial: [].}
-after reshard,dist_y is Tensor(shape=[4, 4], dtype=int64, place=Place(gpu:0), stop_gradient=True, process_mesh={shape: [1,2], process_ids: [0,1], dim_names: [x,y]}, placements=[Replicate(), Replicate()], GlobalDenseTensor=
-       [[0 , 1 , 2 , 3 ],
-        [4 , 5 , 6 , 7 ],
-        [8 , 9 , 10, 11],
-        [12, 13, 14, 15]])
-W0221 05:27:21.270542 13828 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 7.0, Driver API Version: 12.0, Runtime API Version: 11.8
-W0221 05:27:21.271441 13828 gpu_resources.cc:164] device: 0, cuDNN Version: 8.9.
-before shard,x is Tensor(shape=[4, 4], dtype=int64, place=Place(gpu:0), stop_gradient=True,
-       [[0 , 1 , 2 , 3 ],
-        [4 , 5 , 6 , 7 ],
-        [8 , 9 , 10, 11],
-        [12, 13, 14, 15]])
-========================
-dist_attr is {process_mesh: {shape: [2,1], process_ids: [0,1], dim_names: [x,y]}, dims_mappings: [-1,-1], batch_dim: 0, chunk_id: 0, skip_check_mesh: 0, dynamic_dims: [0,0], annotated: [dims_mapping: 1,process_mesh: 1], partial: [].}
-after shard,dist_x is Tensor(shape=[4, 4], dtype=int64, place=Place(gpu:0), stop_gradient=True, process_mesh={shape: [2,1], process_ids: [0,1], dim_names: [x,y]}, placements=[Replicate(), Replicate()], GlobalDenseTensor=
-       [[0 , 1 , 2 , 3 ],
-        [4 , 5 , 6 , 7 ],
-        [8 , 9 , 10, 11],
-        [12, 13, 14, 15]])
-========================
-placements is [Replicate(), Replicate()]
-dist_attr is {process_mesh: {shape: [1,2], process_ids: [0,1], dim_names: [x,y]}, dims_mappings: [-1,-1], batch_dim: 0, chunk_id: 0, skip_check_mesh: 0, dynamic_dims: [0,0], annotated: [dims_mapping: 1,process_mesh: 1], partial: [].}
-after reshard,dist_y is Tensor(shape=[4, 4], dtype=int64, place=Place(gpu:0), stop_gradient=True, process_mesh={shape: [1,2], process_ids: [0,1], dim_names: [x,y]}, placements=[Replicate(), Replicate()], GlobalDenseTensor=
-       [[0 , 1 , 2 , 3 ],
-        [4 , 5 , 6 , 7 ],
-        [8 , 9 , 10, 11],
-        [12, 13, 14, 15]])
-========================
-W0221 05:28:11.696884 14115 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 7.0, Driver API Version: 12.0, Runtime API Version: 11.8
-W0221 05:28:11.697810 14115 gpu_resources.cc:164] device: 0, cuDNN Version: 8.9.
+**********shard_test************
+W0221 08:33:33.014628 28674 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 7.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0221 08:33:33.015506 28674 gpu_resources.cc:164] device: 0, cuDNN Version: 8.9.
 before shard,
 ======================== x is Tensor(shape=[4, 4], dtype=int64, place=Place(gpu:0), stop_gradient=True,
        [[0 , 1 , 2 , 3 ],
@@ -105,125 +8,27 @@ before shard,
         [8 , 9 , 10, 11],
         [12, 13, 14, 15]])
 ========================
-dist_attr is {process_mesh: {shape: [2,1], process_ids: [0,1], dim_names: [x,y]}, dims_mappings: [-1,-1], batch_dim: 0, chunk_id: 0, skip_check_mesh: 0, dynamic_dims: [0,0], annotated: [dims_mapping: 1,process_mesh: 1], partial: [].}
+dist_x._local_value().numpy() is [[0 1 2 3]
+ [4 5 6 7]]
+I0221 08:33:35.722422 28674 tcp_utils.cc:185] The server starts to listen on IP_ANY:42525; setting synclog to 2048
+I0221 08:33:35.742261 28674 tcp_utils.cc:134] Successfully connected to 10.44.14.13:42525
 after shard,
-======================== dist_x is Tensor(shape=[4, 4], dtype=int64, place=Place(gpu:0), stop_gradient=True, process_mesh={shape: [2,1], process_ids: [0,1], dim_names: [x,y]}, placements=[Replicate(), Replicate()], GlobalDenseTensor=
-       [[0 , 1 , 2 , 3 ],
-        [4 , 5 , 6 , 7 ],
-        [8 , 9 , 10, 11],
-        [12, 13, 14, 15]])
-========================
-placements is [Replicate(), Replicate()]
-dist_attr is {process_mesh: {shape: [1,2], process_ids: [0,1], dim_names: [x,y]}, dims_mappings: [-1,-1], batch_dim: 0, chunk_id: 0, skip_check_mesh: 0, dynamic_dims: [0,0], annotated: [dims_mapping: 1,process_mesh: 1], partial: [].}
-after reshard,
-======================== dist_y is Tensor(shape=[4, 4], dtype=int64, place=Place(gpu:0), stop_gradient=True, process_mesh={shape: [1,2], process_ids: [0,1], dim_names: [x,y]}, placements=[Replicate(), Replicate()], GlobalDenseTensor=
-       [[0 , 1 , 2 , 3 ],
-        [4 , 5 , 6 , 7 ],
-        [8 , 9 , 10, 11],
-        [12, 13, 14, 15]])
-========================
-W0221 05:34:26.578347 14673 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 7.0, Driver API Version: 12.0, Runtime API Version: 11.8
-W0221 05:34:26.579180 14673 gpu_resources.cc:164] device: 0, cuDNN Version: 8.9.
-before shard,
-======================== x is Tensor(shape=[4, 4], dtype=int64, place=Place(gpu:0), stop_gradient=True,
-       [[0 , 1 , 2 , 3 ],
-        [4 , 5 , 6 , 7 ],
-        [8 , 9 , 10, 11],
-        [12, 13, 14, 15]])
-========================
-after shard,
-======================== dist_x is Tensor(shape=[4, 4], dtype=int64, place=Place(gpu:0), stop_gradient=True, process_mesh={shape: [2,1], process_ids: [0,1], dim_names: [x,y]}, placements=[Replicate(), Replicate()], GlobalDenseTensor=
-       [[0 , 1 , 2 , 3 ],
-        [4 , 5 , 6 , 7 ],
-        [8 , 9 , 10, 11],
-        [12, 13, 14, 15]])
-========================
-调用moe_utils._dist_reshape!
-after reshard,
-======================== dist_y is Tensor(shape=[4, 4], dtype=int64, place=Place(gpu:0), stop_gradient=True, process_mesh={shape: [1,2], process_ids: [0,1], dim_names: [x,y]}, placements=[Replicate(), Replicate()], GlobalDenseTensor=
-       [[0 , 1 , 2 , 3 ],
-        [4 , 5 , 6 , 7 ],
-        [8 , 9 , 10, 11],
-        [12, 13, 14, 15]])
-========================
-W0221 05:37:43.843940 15296 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 7.0, Driver API Version: 12.0, Runtime API Version: 11.8
-W0221 05:37:43.844858 15296 gpu_resources.cc:164] device: 0, cuDNN Version: 8.9.
-before shard,
-======================== x is Tensor(shape=[4, 4], dtype=int64, place=Place(gpu:0), stop_gradient=True,
+======================== dist_x is Tensor(shape=[4, 4], dtype=int64, place=Place(gpu:0), stop_gradient=True, process_mesh={shape: [2,1], process_ids: [0,1], dim_names: [x,y]}, placements=[Shard(dim=0), Shard(dim=1)], GlobalDenseTensor=
        [[0 , 1 , 2 , 3 ],
         [4 , 5 , 6 , 7 ],
         [8 , 9 , 10, 11],
         [12, 13, 14, 15]])
 ========================
 Traceback (most recent call last):
-  File "semi_auto_parallel_moe_utils.py", line 131, in <module>
+  File "semi_auto_parallel_moe_utils.py", line 179, in <module>
     TestMoEUtils().run_test_case()
-  File "semi_auto_parallel_moe_utils.py", line 127, in run_test_case
-    self.test_reshard_mesh_shape()
-  File "semi_auto_parallel_moe_utils.py", line 114, in test_reshard_mesh_shape
-    print(f"after shard,\n======================== dist_x is {dist_x}\n========================")
-  File "/home/aistudio/.local/lib/python3.8/site-packages/paddle/base/dygraph/tensor_patch_methods.py", line 958, in __format__
-    return object.__format__(self, format_spec)
-  File "/home/aistudio/.local/lib/python3.8/site-packages/paddle/base/dygraph/tensor_patch_methods.py", line 952, in __str__
-    return tensor_to_string(self)
-  File "/home/aistudio/.local/lib/python3.8/site-packages/paddle/tensor/to_string.py", line 458, in tensor_to_string
-    return dist_tensor_to_string(tensor, prefix)
-  File "/home/aistudio/.local/lib/python3.8/site-packages/paddle/tensor/to_string.py", line 425, in dist_tensor_to_string
-    global_tensor = reshard(tensor, tensor.process_mesh, placements)
-  File "/home/aistudio/.local/lib/python3.8/site-packages/paddle/distributed/auto_parallel/api.py", line 851, in reshard
-    if _reshard_mesh_shape(dist_tensor, mesh, placements): #现在没有走到这个分支里
-  File "/home/aistudio/.local/lib/python3.8/site-packages/paddle/base/dygraph/tensor_patch_methods.py", line 1005, in __bool__
-    return self.__nonzero__()
-  File "/home/aistudio/.local/lib/python3.8/site-packages/paddle/base/dygraph/tensor_patch_methods.py", line 993, in __nonzero__
-    assert (
-AssertionError: When Variable is used as the condition of if/while , Variable can only contain one element.
-W0221 05:41:00.706724 15700 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 7.0, Driver API Version: 12.0, Runtime API Version: 11.8
-W0221 05:41:00.707665 15700 gpu_resources.cc:164] device: 0, cuDNN Version: 8.9.
-before shard,
-======================== x is Tensor(shape=[4, 4], dtype=int64, place=Place(gpu:0), stop_gradient=True,
-       [[0 , 1 , 2 , 3 ],
-        [4 , 5 , 6 , 7 ],
-        [8 , 9 , 10, 11],
-        [12, 13, 14, 15]])
-========================
-Traceback (most recent call last):
-  File "semi_auto_parallel_moe_utils.py", line 131, in <module>
-    TestMoEUtils().run_test_case()
-  File "semi_auto_parallel_moe_utils.py", line 127, in run_test_case
-    self.test_reshard_mesh_shape()
-  File "semi_auto_parallel_moe_utils.py", line 114, in test_reshard_mesh_shape
-    print(f"after shard,\n======================== dist_x is {dist_x}\n========================")
-  File "/home/aistudio/.local/lib/python3.8/site-packages/paddle/base/dygraph/tensor_patch_methods.py", line 958, in __format__
-    return object.__format__(self, format_spec)
-  File "/home/aistudio/.local/lib/python3.8/site-packages/paddle/base/dygraph/tensor_patch_methods.py", line 952, in __str__
-    return tensor_to_string(self)
-  File "/home/aistudio/.local/lib/python3.8/site-packages/paddle/tensor/to_string.py", line 458, in tensor_to_string
-    return dist_tensor_to_string(tensor, prefix)
-  File "/home/aistudio/.local/lib/python3.8/site-packages/paddle/tensor/to_string.py", line 425, in dist_tensor_to_string
-    global_tensor = reshard(tensor, tensor.process_mesh, placements)
-  File "/home/aistudio/.local/lib/python3.8/site-packages/paddle/distributed/auto_parallel/api.py", line 832, in reshard
-    if _only_reshard_mesh_shape(dist_tensor, mesh, placements):
-NameError: name '_only_reshard_mesh_shape' is not defined
-W0221 05:42:47.140688 16101 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 7.0, Driver API Version: 12.0, Runtime API Version: 11.8
-W0221 05:42:47.141752 16101 gpu_resources.cc:164] device: 0, cuDNN Version: 8.9.
-before shard,
-======================== x is Tensor(shape=[4, 4], dtype=int64, place=Place(gpu:0), stop_gradient=True,
-       [[0 , 1 , 2 , 3 ],
-        [4 , 5 , 6 , 7 ],
-        [8 , 9 , 10, 11],
-        [12, 13, 14, 15]])
-========================
-after shard,
-======================== dist_x is Tensor(shape=[4, 4], dtype=int64, place=Place(gpu:0), stop_gradient=True, process_mesh={shape: [2,1], process_ids: [0,1], dim_names: [x,y]}, placements=[Replicate(), Replicate()], GlobalDenseTensor=
-       [[0 , 1 , 2 , 3 ],
-        [4 , 5 , 6 , 7 ],
-        [8 , 9 , 10, 11],
-        [12, 13, 14, 15]])
-========================
-after reshard,
-======================== dist_y is Tensor(shape=[4, 4], dtype=int64, place=Place(gpu:0), stop_gradient=True, process_mesh={shape: [1,2], process_ids: [0,1], dim_names: [x,y]}, placements=[Replicate(), Replicate()], GlobalDenseTensor=
-       [[0 , 1 , 2 , 3 ],
-        [4 , 5 , 6 , 7 ],
-        [8 , 9 , 10, 11],
-        [12, 13, 14, 15]])
-========================
+  File "semi_auto_parallel_moe_utils.py", line 175, in run_test_case
+    self.test_reshard_mesh_shape_shard()
+  File "semi_auto_parallel_moe_utils.py", line 160, in test_reshard_mesh_shape_shard
+    dist_y = dist.reshard(
+  File "/home/aistudio/.local/lib/python3.8/site-packages/paddle/distributed/auto_parallel/api.py", line 854, in reshard
+    return paddle.base.core.reshard(dist_tensor, dist_attr)
+NotImplementedError: (Unimplemented) 
+Can not reshard from in_dist_attr={process_mesh: {shape: [2,1], process_ids: [0,1], dim_names: [x,y]}, dims_mappings: [0,1], batch_dim: 0, chunk_id: 0, skip_check_mesh: 0, dynamic_dims: [0,0], annotated: [], partial: [].} to out_dist_attr={process_mesh: {shape: [1,2], process_ids: [0,1], dim_names: [x,y]}, dims_mappings: [0,1], batch_dim: 0, chunk_id: 0, skip_check_mesh: 0, dynamic_dims: [0,0], annotated: [dims_mapping: 1,process_mesh: 1], partial: [].}. (at /home/aistudio/pd-dist/moe/Paddle/paddle/phi/core/distributed/auto_parallel/reshard/reshard_function_registry.cc:46)
+
+I0221 08:33:36.370108 28770 tcp_store.cc:292] receive shutdown event and so quit from MasterDaemon run loop
