@@ -1,6 +1,6 @@
-**********shard_test************
-W0221 08:33:33.014628 28674 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 7.0, Driver API Version: 12.0, Runtime API Version: 11.8
-W0221 08:33:33.015506 28674 gpu_resources.cc:164] device: 0, cuDNN Version: 8.9.
+**********replicate_test************
+W0221 08:41:08.954896 29858 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 7.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0221 08:41:08.955854 29858 gpu_resources.cc:164] device: 0, cuDNN Version: 8.9.
 before shard,
 ======================== x is Tensor(shape=[4, 4], dtype=int64, place=Place(gpu:0), stop_gradient=True,
        [[0 , 1 , 2 , 3 ],
@@ -8,27 +8,26 @@ before shard,
         [8 , 9 , 10, 11],
         [12, 13, 14, 15]])
 ========================
-dist_x._local_value().numpy() is [[0 1 2 3]
- [4 5 6 7]]
-I0221 08:33:35.722422 28674 tcp_utils.cc:185] The server starts to listen on IP_ANY:42525; setting synclog to 2048
-I0221 08:33:35.742261 28674 tcp_utils.cc:134] Successfully connected to 10.44.14.13:42525
 after shard,
-======================== dist_x is Tensor(shape=[4, 4], dtype=int64, place=Place(gpu:0), stop_gradient=True, process_mesh={shape: [2,1], process_ids: [0,1], dim_names: [x,y]}, placements=[Shard(dim=0), Shard(dim=1)], GlobalDenseTensor=
+======================== dist_x is Tensor(shape=[4, 4], dtype=int64, place=Place(gpu:0), stop_gradient=True, process_mesh={shape: [2,1], process_ids: [0,1], dim_names: [x,y]}, placements=[Replicate(), Replicate()], GlobalDenseTensor=
        [[0 , 1 , 2 , 3 ],
         [4 , 5 , 6 , 7 ],
         [8 , 9 , 10, 11],
         [12, 13, 14, 15]])
 ========================
-Traceback (most recent call last):
-  File "semi_auto_parallel_moe_utils.py", line 179, in <module>
-    TestMoEUtils().run_test_case()
-  File "semi_auto_parallel_moe_utils.py", line 175, in run_test_case
-    self.test_reshard_mesh_shape_shard()
-  File "semi_auto_parallel_moe_utils.py", line 160, in test_reshard_mesh_shape_shard
-    dist_y = dist.reshard(
-  File "/home/aistudio/.local/lib/python3.8/site-packages/paddle/distributed/auto_parallel/api.py", line 854, in reshard
-    return paddle.base.core.reshard(dist_tensor, dist_attr)
-NotImplementedError: (Unimplemented) 
-Can not reshard from in_dist_attr={process_mesh: {shape: [2,1], process_ids: [0,1], dim_names: [x,y]}, dims_mappings: [0,1], batch_dim: 0, chunk_id: 0, skip_check_mesh: 0, dynamic_dims: [0,0], annotated: [], partial: [].} to out_dist_attr={process_mesh: {shape: [1,2], process_ids: [0,1], dim_names: [x,y]}, dims_mappings: [0,1], batch_dim: 0, chunk_id: 0, skip_check_mesh: 0, dynamic_dims: [0,0], annotated: [dims_mapping: 1,process_mesh: 1], partial: [].}. (at /home/aistudio/pd-dist/moe/Paddle/paddle/phi/core/distributed/auto_parallel/reshard/reshard_function_registry.cc:46)
-
-I0221 08:33:36.370108 28770 tcp_store.cc:292] receive shutdown event and so quit from MasterDaemon run loop
+only reshard mesh shape
+after reshard,
+======================== dist_y is Tensor(shape=[4, 4], dtype=int64, place=Place(gpu:0), stop_gradient=True, process_mesh={shape: [1,2], process_ids: [0,1], dim_names: [x,y]}, placements=[Replicate(), Replicate()], GlobalDenseTensor=
+       [[0 , 1 , 2 , 3 ],
+        [4 , 5 , 6 , 7 ],
+        [8 , 9 , 10, 11],
+        [12, 13, 14, 15]])
+========================
+dist_y._local_value().numpy() is [[ 0  1  2  3]
+ [ 4  5  6  7]
+ [ 8  9 10 11]
+ [12 13 14 15]]
+ dist_x._local_value().numpy() is [[ 0  1  2  3]
+ [ 4  5  6  7]
+ [ 8  9 10 11]
+ [12 13 14 15]]

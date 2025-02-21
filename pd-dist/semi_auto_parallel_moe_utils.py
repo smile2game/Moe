@@ -30,81 +30,81 @@ class TestMoEUtils:
         self._mesh1 = dist.ProcessMesh([[0, 1]], dim_names=["x", "y"])
         self._mesh2 = dist.ProcessMesh([0,1],dim_names = ['x']) #一个维度
 
-    # def test_local_reshape(self):
-    #     (h, w) = (4, 4)
-    #     src_shape = [h, w]
-    #     tgt_shape = [h // 2, w * 2]
-    #     x = paddle.arange(0, h * w).reshape(src_shape)
-    #     x.stop_gradient = False
-    #     np_x = x.numpy()
-    #     print(f"before shard,x is {x}")
+    def test_local_reshape(self):
+        (h, w) = (4, 4)
+        src_shape = [h, w]
+        tgt_shape = [h // 2, w * 2]
+        x = paddle.arange(0, h * w).reshape(src_shape)
+        x.stop_gradient = False
+        np_x = x.numpy()
+        print(f"before shard,x is {x}")
 
-    #     dist_x = dist.shard_tensor(
-    #         x, self._mesh0, [dist.Shard(1), dist.Replicate()]
-    #     )
-    #     dist_y = dist.auto_parallel.moe_utils._dist_reshape(
-    #         dist_x, [-1, w * 2], self._mesh0, [dist.Shard(1), dist.Replicate()]
-    #     )
+        dist_x = dist.shard_tensor(
+            x, self._mesh0, [dist.Shard(1), dist.Replicate()]
+        )
+        dist_y = dist.auto_parallel.moe_utils._dist_reshape(
+            dist_x, [-1, w * 2], self._mesh0, [dist.Shard(1), dist.Replicate()]
+        )
 
-    #     splitted_np_x = np.split(np_x, 2, axis=1)
-    #     for i in range(len(splitted_np_x)):
-    #         splitted_np_x[i] = splitted_np_x[i].reshape([h // 2, w])
-    #     np.testing.assert_array_equal(
-    #         splitted_np_x[dist.get_rank()], dist_y._local_value().numpy()
-    #     )
+        splitted_np_x = np.split(np_x, 2, axis=1)
+        for i in range(len(splitted_np_x)):
+            splitted_np_x[i] = splitted_np_x[i].reshape([h // 2, w])
+        np.testing.assert_array_equal(
+            splitted_np_x[dist.get_rank()], dist_y._local_value().numpy()
+        )
 
-    #     label = paddle.ones(tgt_shape, dtype=paddle.int64)
-    #     label.stop_gradient = False
-    #     dist_label = dist.shard_tensor(
-    #         label, self._mesh0, [dist.Shard(1), dist.Replicate()]
-    #     )
-    #     loss = dist_y - dist_label
-    #     loss.backward()
+        label = paddle.ones(tgt_shape, dtype=paddle.int64)
+        label.stop_gradient = False
+        dist_label = dist.shard_tensor(
+            label, self._mesh0, [dist.Shard(1), dist.Replicate()]
+        )
+        loss = dist_y - dist_label
+        loss.backward()
 
-    #     np_grad = np.ones(src_shape, dtype="int64")
-    #     splitted_np_grad = np.split(np_grad, 2, axis=1)
-    #     np.testing.assert_array_equal(
-    #         splitted_np_grad[dist.get_rank()],
-    #         dist_x.grad._local_value().numpy(),
-    #     )
+        np_grad = np.ones(src_shape, dtype="int64")
+        splitted_np_grad = np.split(np_grad, 2, axis=1)
+        np.testing.assert_array_equal(
+            splitted_np_grad[dist.get_rank()],
+            dist_x.grad._local_value().numpy(),
+        )
 
-    #     with unittest.TestCase().assertRaises(AssertionError):
-    #         dist_z = dist.auto_parallel.moe_utils._dist_reshape(
-    #             dist_x,
-    #             dist_x.shape,
-    #             self._mesh1,
-    #             [dist.Replicate(), dist.Replicate()],
-    #         )
+        with unittest.TestCase().assertRaises(AssertionError):
+            dist_z = dist.auto_parallel.moe_utils._dist_reshape(
+                dist_x,
+                dist_x.shape,
+                self._mesh1,
+                [dist.Replicate(), dist.Replicate()],
+            )
 
-    #     # test the warning log message
-    #     dist_z = dist.auto_parallel.moe_utils._dist_reshape(
-    #         dist_x, dist_x.shape, self._mesh0, [dist.Shard(1), dist.Shard(1)]
-    #     )
+        # test the warning log message
+        dist_z = dist.auto_parallel.moe_utils._dist_reshape(
+            dist_x, dist_x.shape, self._mesh0, [dist.Shard(1), dist.Shard(1)]
+        )
 
-    # def test_nd_mesh_alltoall(self):
-    #     (h, w) = (4, 4)
-    #     src_shape = [h, w]
-    #     x = paddle.arange(0, h * w).reshape(src_shape)
-    #     x.stop_gradient = False
+    def test_nd_mesh_alltoall(self):
+        (h, w) = (4, 4)
+        src_shape = [h, w]
+        x = paddle.arange(0, h * w).reshape(src_shape)
+        x.stop_gradient = False
 
-    #     dist_x = dist.shard_tensor(
-    #         x, self._mesh0, [dist.Shard(1), dist.Replicate()]
-    #     )
-    #     dist_y = dist.reshard(
-    #         dist_x, self._mesh0, [dist.Shard(0), dist.Replicate()]
-    #     )
-    #     dist_y.backward()
+        dist_x = dist.shard_tensor(
+            x, self._mesh0, [dist.Shard(1), dist.Replicate()]
+        )
+        dist_y = dist.reshard(
+            dist_x, self._mesh0, [dist.Shard(0), dist.Replicate()]
+        )
+        dist_y.backward()
 
-    #     assert dist_y.placements == [dist.Shard(0), dist.Replicate()]
-    #     assert dist_x.grad.placements == [dist.Shard(1), dist.Replicate()]
-    #     np_grad = np.ones(src_shape, dtype="int64")
-    #     splitted_np_grad = np.split(np_grad, 2, axis=1)
-    #     np.testing.assert_array_equal(
-    #         splitted_np_grad[dist.get_rank()],
-    #         dist_x.grad._local_value().numpy(),
-    #     )
+        assert dist_y.placements == [dist.Shard(0), dist.Replicate()]
+        assert dist_x.grad.placements == [dist.Shard(1), dist.Replicate()]
+        np_grad = np.ones(src_shape, dtype="int64")
+        splitted_np_grad = np.split(np_grad, 2, axis=1)
+        np.testing.assert_array_equal(
+            splitted_np_grad[dist.get_rank()],
+            dist_x.grad._local_value().numpy(),
+        )
 
-    def test_reshard_mesh_shape(self):
+    def test_reshard_mesh_shape_replicate(self):
         print("**********replicate_test************")
         (h, w) = (4, 4)
         src_shape = [h, w]
@@ -170,9 +170,9 @@ class TestMoEUtils:
     def run_test_case(self):
         # self.test_local_reshape()
         # self.test_nd_mesh_alltoall()
-        # self.test_reshard_mesh_shape()
+        self.test_reshard_mesh_shape_replicate()
         # self.test_reshard_mesh_shape_partial()
-        self.test_reshard_mesh_shape_shard()
+        # self.test_reshard_mesh_shape_shard()
 
 
 if __name__ == '__main__':
