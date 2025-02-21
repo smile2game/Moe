@@ -156,12 +156,24 @@ class TestMoEUtils:
             x, self._mesh0, [dist.Shard(0), dist.Shard(1)]
         )
         print(f"dist_x._local_value().numpy() is {dist_x._local_value().numpy()}")
+
+        dist_z = dist.shard_tensor(
+            x, self._mesh2, [dist.Shard(0)]
+        )
+        print(f"dist_z._local_value().numpy() is {dist_z._local_value().numpy()}")
+        
+        if np.array_equal(dist_x._local_value().numpy(), dist_z._local_value().numpy()):
+            print("_local_value不变")
+        else:
+            print("_local_value改变")
+
+
         print(f"after shard,\n======================== dist_x is {dist_x}\n========================")
         dist_y = dist.reshard(
-            dist_x, self._mesh1, [dist.Shard(0),dist.Shard(1)]
+            dist_x, self._mesh2, [dist.Shard(0)]
         )
         print(f"after reshard,\n======================== dist_y is {dist_y}\n========================")    
-        assert dist_y.process_mesh == self._mesh1
+        assert dist_y.process_mesh == self._mesh2
         print(f"dist_y._local_value().numpy() is {dist_y._local_value().numpy()}\n dist_x._local_value().numpy() is {dist_x._local_value().numpy()}")
         np.testing.assert_array_equal(
             dist_y._local_value().numpy(), dist_x._local_value().numpy()
@@ -170,9 +182,9 @@ class TestMoEUtils:
     def run_test_case(self):
         # self.test_local_reshape()
         # self.test_nd_mesh_alltoall()
-        self.test_reshard_mesh_shape_replicate()
+        # self.test_reshard_mesh_shape_replicate()
         # self.test_reshard_mesh_shape_partial()
-        # self.test_reshard_mesh_shape_shard()
+        self.test_reshard_mesh_shape_shard()
 
 
 if __name__ == '__main__':
