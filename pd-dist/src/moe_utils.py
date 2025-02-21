@@ -391,18 +391,36 @@ def _only_reshard_mesh_shape(
     if src_mesh == mesh or src_mesh.process_ids != mesh.process_ids:
         return False
 
-    # only the mesh shapes are different,
-    # if the placements are all replicate or partial,
-    # then we can reshard the mesh shapes
-    if any(p.is_shard() for p in src_placements + placements):
-        return False
+    
+    print("进入到判断当中")
+    print(f"src_placements is {src_placements},\nsrc_mesh is {src_mesh}")
+    print(f"dst_placements is {placements},\ndst_mesh is {mesh}")
+    src_len = len(src_placements)
+    dst_len = len(placements)
+    print(f"src_mesh.shape[1] is {src_mesh.shape[1]}")
+    if src_len >= dst_len:
+        print(f"src_len is {src_len},dst_len is {dst_len}")
+        for i in range(dst_len):
+            if src_mesh.shape[i] != mesh.shape[i]:
+                return False
+        for i in range(dst_len,src_len):
+            if src_mesh.shape[i] != 1:
+                return False
+    else:
+        for i in range(src_len):
+            if src_mesh.shape[i] != mesh.shape[i]:
+                return False
+        for i in range(src_len,dst_len):
+            if dst_mesh.shape[i] != 1:
+                return False
+
 
     if src_placements[0].is_partial():
         for p in src_placements + placements:
             if p != src_placements[0]:
                 return False
-
     return True
+
 
 
 def _reshard_mesh_shape(
