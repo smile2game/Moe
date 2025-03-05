@@ -390,8 +390,21 @@ def _only_reshard_mesh_shape(
         )
     if src_mesh == mesh or src_mesh.process_ids != mesh.process_ids:
         return False
+    # 4x4
+    """
+    模拟法 判断 (Shard/Partial)
+    def _get_local_date_index(dist_tensor: Tensor, mesh: ProcessMesh, placements: list[Placement]): #直接写逻辑
+        """ 
+        placements(Shard0) >> 0
+        shard_dim = placement.get_dim()
+        dist_tensor.process_mesh
+        """
 
     
+    for i in range(rank):
+        if local_date_index_new[rank] == local_date_index_old[rank]
+    """
+
     print("进入到判断当中")
     print(f"src_placements is {src_placements},\nsrc_mesh is {src_mesh}")
     print(f"dst_placements is {placements},\ndst_mesh is {mesh}")
@@ -414,7 +427,6 @@ def _only_reshard_mesh_shape(
             if dst_mesh.shape[i] != 1:
                 return False
 
-
     if src_placements[0].is_partial():
         for p in src_placements + placements:
             if p != src_placements[0]:
@@ -424,7 +436,7 @@ def _only_reshard_mesh_shape(
 
 
 def _reshard_mesh_shape(
-    dist_tensor: Tensor, mesh: ProcessMesh, placements: list[Placement]
+    dist_tensor: Tensor, mesh: ProcessMesh, placements: list[Placement]  
 ):
     """
     Reshard the mesh shape of the dist tensor. This is used to only modify
@@ -433,6 +445,7 @@ def _reshard_mesh_shape(
     E.g.
       1. [0,1,2,3], [Replicate()]  --> [[0,1],[2,3]], [Replicate(), Replicate()]
       2. [[0,1],[2,3]] [Partial(),Partial()]  --> [0,1,2,3], [Partial()]
+      3. [] [Shard()]
     """
     if paddle.in_dynamic_mode():
         src_placements = dist_tensor.placements

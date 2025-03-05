@@ -1,6 +1,147 @@
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I0305 05:24:42.844848 12680 pybind.cc:703] pylayer has no kernels, skip
+I0305 05:24:42.844933 12680 pybind.cc:703] while has no kernels, skip
+I0305 05:24:42.844961 12680 pybind.cc:703] conditional_block has no kernels, skip
+I0305 05:24:42.844969 12680 pybind.cc:703] py_func has no kernels, skip
+I0305 05:24:42.875725 12680 dynamic_loader.cc:175] Set paddle lib path : /home/aistudio/.local/lib/python3.8/site-packages/paddle/libs
+I0305 05:24:42.912195 12680 global_utils.h:89] Set current tracer for Controller: 0
+I0305 05:24:42.912410 12680 tracer.cc:86] Set current tracer: 0
+I0305 05:24:43.442180 12680 init.cc:101] Before Parse: argc is 2, Init commandline: dummy --tryfromenv=einsum_opt,async_trace_count,fast_eager_deletion_mode,max_inplace_grad_add,lapack_dir,cuda_dir,tensorrt_dir,query_dest_rank_by_multi_node,add_dependency_for_communication_op,accuracy_check_rtol_fp32,gpugraph_merge_grads_segment_size,sort_sum_gradient,host_trace_level,gpugraph_enable_gpu_direct_access,mklml_dir,enable_all2all_use_fp16,enable_blaslt_global_search,cudnn_exhaustive_search,nvidia_package_dir,gpugraph_offload_param_stat,initial_gpu_memory_in_mb,pir_apply_inplace_pass,gpugraph_force_device_batch_num_equal,enable_cinn_accuracy_check,pir_broadcast_tree_limit,check_infer_symbolic,gpugraph_offload_param_extends,reallocate_gpu_memory_in_mb,prim_backward,use_fast_math,fuse_parameter_memory_size,nccl_dir,cudnn_deterministic,prim_forward_blacklist,mkl_dir,sync_after_alloc,alloc_fill_value,use_autotune,benchmark,disable_logging_op_attr_list,sync_nccl_allreduce,use_mkldnn,cublaslt_exhaustive_search_times,enable_tracker_all2all,graph_get_neighbor_id,logging_pir_py_code_dump_symbolic_dims,new_executor_use_cuda_graph,save_cf_stack_op,use_auto_growth_v2,cuda_malloc_async_pool_memory_throttle_ratio,prim_all,check_kernel_launch,use_xqa_optim,enable_transpose_iters_in_fusion,static_executor_perfstat_filepath,enable_adjust_op_order,graph_load_in_parallel,enable_auto_detect_gpu_topo,enable_append_iters_in_fusion,gpu_memory_limit_mb,enable_fuse_parallel_matmul_pass,gpugraph_enable_hbm_table_collision_stat,op_dir,dynamic_static_unified_comm,cusparselt_dir,eager_delete_scope,enable_dump_main_program,prim_enable_dynamic,init_allocated_mem,search_cache_max_number,fused_multi_transformer_op_use_mbfmha,accuracy_check_rtol_fp16,cudnn_dir,prim_skip_dynamic,call_stack_level,logging_trunc_pir_py_code,use_virtual_memory_auto_growth,fuse_parameter_groups_size,check_nan_inf_level,enable_api_kernel_fallback,cusparse_dir,disable_dyshape_in_train,fraction_of_cuda_pinned_memory_to_use,benchmark_nccl,eager_delete_tensor_gb,gpugraph_enable_segment_merge_grads,enable_cse_in_dy2st,ir_inplace_kernel_blacklist,eager_communication_connection,new_executor_use_local_scope,new_executor_use_inplace,free_idle_chunk,cache_inference_while_scope,npu_storage_format,allocator_strategy,enable_exit_when_partial_worker,logging_pir_py_code_dir,logging_pir_py_code_int_tensor_element_limit,use_stream_safe_cuda_allocator,gemm_use_half_precision_compute_type,initial_cpu_memory_in_mb,accuracy_check_atol_fp16,communicator_send_queue_size,cublaslt_device_best_config,enable_record_memory,dist_threadpool_size,tracer_onednn_ops_off,apply_pass_to_program,get_host_by_name_time,use_pinned_memory,cupti_dir,pinned_memory_as_cpu_backend,enable_opt_get_features,new_executor_static_build,enable_neighbor_list_use_uva,enable_dependency_builder_debug_info,trt_ibuilder_cache,enable_auto_parallel_align_mode,run_kp_kernel,local_exe_sub_scope_limit,use_stride_kernel,gpugraph_enable_print_op_debug,save_static_runtime_data,selected_gpus,multi_node_sample_use_gpu_table,enable_pir_with_pt_in_dy2st,gpugraph_parallel_copyer_split_maxsize,enable_collect_shape,tracer_profile_fname,free_when_no_cache_hit,enable_reuse_iters_in_fusion,enable_pir_api,gpugraph_dedup_pull_push_mode,conv_workspace_size_limit,communicator_max_merge_var_num,new_executor_serial_run,set_to_1d,new_executor_sequential_run,low_precision_op_list,pir_apply_shape_optimization_pass,graph_neighbor_size_percent,tensor_operants_mode,print_kernel_run_info,enable_fusion_fallback,gpugraph_load_node_list_into_hbm,inner_op_parallelism,embedding_deterministic,cuda_core_int8_gemm,enable_gpu_memory_usage_log,fraction_of_cpu_memory_to_use,enable_gpu_memory_usage_log_mb,enable_graph_multi_node_sampling,pir_interpreter_record_stream_for_gc_cache,graph_metapath_split_opt,gpugraph_slot_feasign_max_num,accuracy_check_atol_fp32,log_memory_stats,enable_auto_layout_pass,cusolver_dir,enable_async_trace,dygraph_debug,jit_engine_type,convert_all_blocks,enable_sparse_inner_gather,paddle_num_threads,accuracy_check_atol_bf16,flash_attn_version,use_shm_cache,communicator_is_sgd_optimizer,allreduce_record_one_event,print_sub_graph_dir,conv2d_disable_cudnn,tracer_onednn_ops_on,manually_trans_conv_filter,use_cuda_managed_memory,use_auto_growth_pinned_allocator,auto_growth_chunk_size_in_mb,all_blocks_convert_trt,executor_log_deps_every_microseconds,enable_fusion_result_check,force_sync_ops,gpugraph_parallel_stream_num,prim_check_ops,print_ir,print_allocator_trace_info,cse_max_count,gpugraph_offload_gather_copy_maxsize,gpu_allocator_retry_time,enable_auto_rdma_trans,enable_custom_engine,win_cuda_bin_dir,fraction_of_gpu_memory_to_use,use_cuda_malloc_async_allocator,accuracy_check_rtol_bf16,nccl_blocking_wait,gpugraph_hbm_table_load_factor,check_nan_inf,gpugraph_sparse_table_storage_mode,enable_unused_var_check,prim_enabled,enable_cublas_tensor_op_math,curand_dir,multi_block_attention_min_partition_size,memory_fraction_of_eager_deletion,cublas_dir,use_system_allocator,multiple_of_cupti_buffer_size,dataloader_use_file_descriptor,cudnn_batchnorm_spatial_persistent,enable_pir_in_executor,dump_chunk_info,prim_forward,reader_queue_speed_test_mode,gpugraph_debug_gpu_memory,graph_embedding_split_infer_mode,static_runtime_data_save_path,auto_free_cudagraph_allocations_on_launch,enable_pir_in_executor_trace_run,cuda_memory_async_pool_release_threshold,tcp_max_syn_backlog,gpugraph_storage_mode,trt_min_group_size,cudnn_exhaustive_search_times 
+I0305 05:24:43.442308 12680 init.cc:109] After Parse: argc is 2
+I0305 05:24:43.442415 12680 os_info.cc:117] SetCurrentThreadName MainThread
+I0305 05:24:43.442490 12680 pybind.cc:2509] Initialize tensor operants successfully
+I0305 05:24:43.552827 12680 amp_auto_cast.cc:113] -- The size of all_ops: 1146 --
+I0305 05:24:43.552910 12680 amp_auto_cast.cc:114] -- The size of supported_ops: 208 --
+I0305 05:24:43.552917 12680 amp_auto_cast.cc:115] -- The size of unsupported_ops: 938 --
+I0305 05:24:44.008915 12680 global_utils.h:89] Set current tracer for Controller: 0x588db90
+I0305 05:24:44.008981 12680 tracer.cc:86] Set current tracer: 0x588db90
+I0305 05:24:44.009033 12680 imperative.cc:699] Tracer(0x588db90) set expected place Place(gpu:0)
+I0305 05:24:44.009166 12680 global_value_getter_setter.cc:189] set FLAGS_enable_pir_in_executor to True
 **********shard_test************
-W0221 10:15:26.303407 40681 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 7.0, Driver API Version: 12.0, Runtime API Version: 11.8
-W0221 10:15:26.304277 40681 gpu_resources.cc:164] device: 0, cuDNN Version: 8.9.
+I0305 05:24:44.024097 12680 ops_api.cc:1938] Call eager_api_full
+I0305 05:24:44.024142 12680 eager_op_function.cc:16512] Running Eager Final State API: full
+I0305 05:24:44.024175 12680 eager_utils.cc:2316] type_name: int
+I0305 05:24:44.024201 12680 dygraph_functions.cc:34583] Running AD API: full
+I0305 05:24:44.024206 12680 dygraph_functions.cc:34593]  No Type Promotion for full_ad_func api. 
+I0305 05:24:44.024210 12680 dygraph_functions.cc:34596]  No Type Autocast for full_ad_func api. 
+I0305 05:24:44.024214 12680 dygraph_functions.cc:34599] Running C++ API: full
+I0305 05:24:44.024219 12680 dygraph_functions.cc:34607] { Input: []} 
+I0305 05:24:44.024412 12680 api.cc:47814] full API kernel key: [CPU, Undefined(AnyLayout), int64]
+I0305 05:24:44.024441 12680 api.cc:47821] full kernel: {"input":[],"output":["CPU, NCHW, int64"],"attribute":["IntArray","Scalar","DataType"]}
+I0305 05:24:44.024464 12680 context_pool.cc:62] DeviceContextPool Get: Place(cpu)
+I0305 05:24:44.024513 12680 allocator_facade.cc:212] selected allocator strategy:1
+I0305 05:24:44.024539 12680 allocator_facade.cc:1051] FLAGS_auto_growth_chunk_size_in_mb is 0
+I0305 05:24:44.024646 12680 dynamic_loader.cc:225] Try to find library: libcuda.so from default system path.
+I0305 05:24:44.024685 12680 auto_growth_best_fit_allocator.cc:64] chunk_size_:256
+I0305 05:24:44.024700 12680 allocator_facade.cc:1051] FLAGS_auto_growth_chunk_size_in_mb is 0
+I0305 05:24:44.024706 12680 auto_growth_best_fit_allocator.cc:64] chunk_size_:256
+I0305 05:24:44.025118 12680 allocator_facade.cc:382] [GetAllocator] place = Place(cpu) size = 1 Allocator = 0x1d96350
+I0305 05:24:44.025156 12680 generator.cc:181] Generator Random state device id: -1, seed: 1063783263832952, offset: 0, cpu_engine: 0x1d964c0
+I0305 05:24:44.025168 12680 allocator_facade.cc:382] [GetAllocator] place = Place(cpu) size = 1 Allocator = 0x1d96350
+I0305 05:24:44.025175 12680 allocator_facade.cc:382] [GetAllocator] place = Place(cpu) size = 0 Allocator = 0x1d95f70
+I0305 05:24:44.025182 12680 allocator_facade.cc:382] [GetAllocator] place = Place(cpu) size = 0 Allocator = 0x1d95f70
+I0305 05:24:44.025465 12680 dygraph_functions.cc:34623] Finish AD API: full
+I0305 05:24:44.025806 12680 dygraph_functions.cc:34637] { Input: [],  
+ Output: [ 
+( out , [{Name: None, Initialized: 1, Ptr: 0x57881d0,TensorInfo: [ Type: DenseTensor, Dtype: int64, Place: Place(cpu), Shape: 1, DistAttr: Unknown ], ADInfo:[ None ]}]), ] } 
+I0305 05:24:44.025931 12680 accumulation_node.h:30] Construct GradNodeAccumulation
+I0305 05:24:44.026087 12680 ops_api.cc:1938] Call eager_api_full
+I0305 05:24:44.026108 12680 eager_op_function.cc:16512] Running Eager Final State API: full
+I0305 05:24:44.026118 12680 eager_utils.cc:2316] type_name: int
+I0305 05:24:44.026129 12680 dygraph_functions.cc:34583] Running AD API: full
+I0305 05:24:44.026132 12680 dygraph_functions.cc:34593]  No Type Promotion for full_ad_func api. 
+I0305 05:24:44.026136 12680 dygraph_functions.cc:34596]  No Type Autocast for full_ad_func api. 
+I0305 05:24:44.026140 12680 dygraph_functions.cc:34599] Running C++ API: full
+I0305 05:24:44.026144 12680 dygraph_functions.cc:34607] { Input: []} 
+I0305 05:24:44.026152 12680 api.cc:47814] full API kernel key: [CPU, Undefined(AnyLayout), int64]
+I0305 05:24:44.026163 12680 api.cc:47821] full kernel: {"input":[],"output":["CPU, NCHW, int64"],"attribute":["IntArray","Scalar","DataType"]}
+I0305 05:24:44.026191 12680 dygraph_functions.cc:34623] Finish AD API: full
+I0305 05:24:44.026213 12680 dygraph_functions.cc:34637] { Input: [],  
+ Output: [ 
+( out , [{Name: None, Initialized: 1, Ptr: 0x5ad3680,TensorInfo: [ Type: DenseTensor, Dtype: int64, Place: Place(cpu), Shape: 1, DistAttr: Unknown ], ADInfo:[ None ]}]), ] } 
+I0305 05:24:44.026229 12680 accumulation_node.h:30] Construct GradNodeAccumulation
+I0305 05:24:44.026283 12680 ops_api.cc:1938] Call eager_api_full
+I0305 05:24:44.026293 12680 eager_op_function.cc:16512] Running Eager Final State API: full
+I0305 05:24:44.026299 12680 eager_utils.cc:2316] type_name: int
+I0305 05:24:44.026305 12680 dygraph_functions.cc:34583] Running AD API: full
+I0305 05:24:44.026309 12680 dygraph_functions.cc:34593]  No Type Promotion for full_ad_func api. 
+I0305 05:24:44.026314 12680 dygraph_functions.cc:34596]  No Type Autocast for full_ad_func api. 
+I0305 05:24:44.026317 12680 dygraph_functions.cc:34599] Running C++ API: full
+I0305 05:24:44.026321 12680 dygraph_functions.cc:34607] { Input: []} 
+I0305 05:24:44.026327 12680 api.cc:47814] full API kernel key: [CPU, Undefined(AnyLayout), int64]
+I0305 05:24:44.026333 12680 api.cc:47821] full kernel: {"input":[],"output":["CPU, NCHW, int64"],"attribute":["IntArray","Scalar","DataType"]}
+I0305 05:24:44.026347 12680 dygraph_functions.cc:34623] Finish AD API: full
+I0305 05:24:44.026358 12680 dygraph_functions.cc:34637] { Input: [],  
+ Output: [ 
+( out , [{Name: None, Initialized: 1, Ptr: 0x59cdcb0,TensorInfo: [ Type: DenseTensor, Dtype: int64, Place: Place(cpu), Shape: 1, DistAttr: Unknown ], ADInfo:[ None ]}]), ] } 
+I0305 05:24:44.026367 12680 accumulation_node.h:30] Construct GradNodeAccumulation
+I0305 05:24:44.026393 12680 ops_api.cc:8415] Call eager_api_arange
+I0305 05:24:44.026582 12680 eager_op_function.cc:42527] Running Eager Final State API: arange
+I0305 05:24:44.026623 12680 cuda_info.cc:257] SetDeviceId 0
+I0305 05:24:44.026633 12680 eager_op_function.cc:42555] CurrentDeviceId: 0 from 0
+I0305 05:24:44.026822 12680 dygraph_functions.cc:86152] Running AD API: arange
+I0305 05:24:44.026835 12680 dygraph_functions.cc:86177]  No Type Promotion for arange_ad_func api. 
+I0305 05:24:44.026840 12680 dygraph_functions.cc:86180]  No Type Autocast for arange_ad_func api. 
+I0305 05:24:44.026849 12680 dygraph_functions.cc:86202] Running C++ API: arange
+I0305 05:24:44.027093 12680 dygraph_functions.cc:86219] { Input: [ 
+( start , [{Name: None, Initialized: 1, Ptr: 0x57881d0,TensorInfo: [ Type: DenseTensor, Dtype: int64, Place: Place(cpu), Shape: 1, DistAttr: Unknown ], ADInfo:[ Grad: [ {Name: None, Initialized: 0, Ptr: 0,TensorInfo: [ Unknown ], ADInfo:[ None ]} ],  GradNode: [ BackwardOutMeta: [  {SlotSize: [1]: SlotID: 0, StopGradients: 0, , Edges[ { NULL Edge } ]}  ], BackwardInMeta: [  {SlotSize: [1]: SlotID: 0, StopGradients: 0, , Edges[ { NULL Edge } ]}  ] ], StopGradient: [ 1 ] ]}]),  
+( end , [{Name: None, Initialized: 1, Ptr: 0x5ad3680,TensorInfo: [ Type: DenseTensor, Dtype: int64, Place: Place(cpu), Shape: 1, DistAttr: Unknown ], ADInfo:[ Grad: [ {Name: None, Initialized: 0, Ptr: 0,TensorInfo: [ Unknown ], ADInfo:[ None ]} ],  GradNode: [ BackwardOutMeta: [  {SlotSize: [1]: SlotID: 0, StopGradients: 0, , Edges[ { NULL Edge } ]}  ], BackwardInMeta: [  {SlotSize: [1]: SlotID: 0, StopGradients: 0, , Edges[ { NULL Edge } ]}  ] ], StopGradient: [ 1 ] ]}]),  
+( step , [{Name: None, Initialized: 1, Ptr: 0x59cdcb0,TensorInfo: [ Type: DenseTensor, Dtype: int64, Place: Place(cpu), Shape: 1, DistAttr: Unknown ], ADInfo:[ Grad: [ {Name: None, Initialized: 0, Ptr: 0,TensorInfo: [ Unknown ], ADInfo:[ None ]} ],  GradNode: [ BackwardOutMeta: [  {SlotSize: [1]: SlotID: 0, StopGradients: 0, , Edges[ { NULL Edge } ]}  ], BackwardInMeta: [  {SlotSize: [1]: SlotID: 0, StopGradients: 0, , Edges[ { NULL Edge } ]}  ] ], StopGradient: [ 1 ] ]}]), ]} 
+I0305 05:24:44.027465 12680 api.cc:122522] arange API kernel key: [GPU, NCHW, int64]
+I0305 05:24:44.027485 12680 api.cc:122529] arange_tensor kernel: {"input":["Undefined, NCHW, int64","Undefined, NCHW, int64","Undefined, NCHW, int64"],"output":["GPU, NCHW, int64"],"attribute":[]}
+I0305 05:24:44.027496 12680 context_pool.cc:62] DeviceContextPool Get: Place(gpu:0)
+W0305 05:24:44.027892 12680 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 7.0, Driver API Version: 12.0, Runtime API Version: 11.8
+I0305 05:24:44.028098 12680 dynamic_loader.cc:225] Try to find library: libcudnn.so from default system path.
+W0305 05:24:44.028832 12680 gpu_resources.cc:164] device: 0, cuDNN Version: 8.9.
+I0305 05:24:46.772322 12680 allocator_facade.cc:382] [GetAllocator] place = Place(gpu:0) size = 1 Allocator = 0x1d96380
+I0305 05:24:46.772396 12680 allocator_facade.cc:382] [GetAllocator] place = Place(gpu_pinned) size = 1 Allocator = 0x1d963e0
+I0305 05:24:46.772436 12680 generator.cc:181] Generator Random state device id: 0, seed: 3142067740717538, offset: 0, cpu_engine: 0x4fe52900
+I0305 05:24:46.772449 12680 generator.cc:87] initial seed: 3142067740717538
+I0305 05:24:46.772459 12680 allocator_facade.cc:382] [GetAllocator] place = Place(cpu) size = 1 Allocator = 0x1d96350
+I0305 05:24:46.772466 12680 allocator_facade.cc:382] [GetAllocator] place = Place(gpu:0) size = 0 Allocator = 0x1d96040
+I0305 05:24:46.772477 12680 allocator_facade.cc:382] [GetAllocator] place = Place(cpu) size = 0 Allocator = 0x1d95f70
+I0305 05:24:46.772943 12680 auto_growth_best_fit_allocator.cc:159] Not found and reallocate 256(0x7fcf15400000), and remaining 0
+I0305 05:24:46.773053 12680 dygraph_functions.cc:86235] Finish AD API: arange
+I0305 05:24:46.773157 12680 dygraph_functions.cc:86258] { Input: [ 
+( start , [{Name: None, Initialized: 1, Ptr: 0x57881d0,TensorInfo: [ Type: DenseTensor, Dtype: int64, Place: Place(cpu), Shape: 1, DistAttr: Unknown ], ADInfo:[ Grad: [ {Name: None, Initialized: 0, Ptr: 0,TensorInfo: [ Unknown ], ADInfo:[ None ]} ],  GradNode: [ BackwardOutMeta: [  {SlotSize: [1]: SlotID: 0, StopGradients: 0, , Edges[ { NULL Edge } ]}  ], BackwardInMeta: [  {SlotSize: [1]: SlotID: 0, StopGradients: 0, , Edges[ { NULL Edge } ]}  ] ], StopGradient: [ 1 ] ]}]),  
+( end , [{Name: None, Initialized: 1, Ptr: 0x5ad3680,TensorInfo: [ Type: DenseTensor, Dtype: int64, Place: Place(cpu), Shape: 1, DistAttr: Unknown ], ADInfo:[ Grad: [ {Name: None, Initialized: 0, Ptr: 0,TensorInfo: [ Unknown ], ADInfo:[ None ]} ],  GradNode: [ BackwardOutMeta: [  {SlotSize: [1]: SlotID: 0, StopGradients: 0, , Edges[ { NULL Edge } ]}  ], BackwardInMeta: [  {SlotSize: [1]: SlotID: 0, StopGradients: 0, , Edges[ { NULL Edge } ]}  ] ], StopGradient: [ 1 ] ]}]),  
+( step , [{Name: None, Initialized: 1, Ptr: 0x59cdcb0,TensorInfo: [ Type: DenseTensor, Dtype: int64, Place: Place(cpu), Shape: 1, DistAttr: Unknown ], ADInfo:[ Grad: [ {Name: None, Initialized: 0, Ptr: 0,TensorInfo: [ Unknown ], ADInfo:[ None ]} ],  GradNode: [ BackwardOutMeta: [  {SlotSize: [1]: SlotID: 0, StopGradients: 0, , Edges[ { NULL Edge } ]}  ], BackwardInMeta: [  {SlotSize: [1]: SlotID: 0, StopGradients: 0, , Edges[ { NULL Edge } ]}  ] ], StopGradient: [ 1 ] ]}]), ],  
+ Output: [ 
+( out , [{Name: None, Initialized: 1, Ptr: 0x4fe532e0,TensorInfo: [ Type: DenseTensor, Dtype: int64, Place: Place(gpu:0), Shape: 16, DistAttr: Unknown ], ADInfo:[ None ]}]), ] } 
+I0305 05:24:46.773201 12680 accumulation_node.h:43] Destruct GradNodeAccumulation
+I0305 05:24:46.773219 12680 accumulation_node.h:43] Destruct GradNodeAccumulation
+I0305 05:24:46.773229 12680 accumulation_node.h:43] Destruct GradNodeAccumulation
+I0305 05:24:46.773452 12680 layout_autotune.cc:31] Already exists in Layout OP: instance_norm
+I0305 05:24:46.773645 12680 layout_autotune.cc:31] Already exists in Layout OP: transpose2
+I0305 05:24:46.773792 12680 layout_autotune.cc:31] Already exists in Layout OP: reshape2
+I0305 05:24:46.774008 12680 layout_autotune.cc:31] Already exists in Layout OP: batch_norm
+I0305 05:24:46.774652 12680 layout_autotune.cc:31] Already exists in Layout OP: transpose
+I0305 05:24:46.774883 12680 layout_autotune.cc:31] Already exists in Layout OP: softmax
+I0305 05:24:46.774941 12680 layout_autotune.cc:83] The number of layout agnostic OPs: 546, heavily layout sensitive OPs: 39, lightly layout sensitive OPs: 140
+I0305 05:24:46.774958 12680 eager_properties.cc:614] eager_properties 'Shape' method, layout autotune  desired_layout: Undefined(AnyLayout) default_layout: Undefined(AnyLayout) tensor layout: NCHW tensor's shape size is : 1
+I0305 05:24:46.774989 12680 ops_api.cc:3738] Call eager_api_reshape
+I0305 05:24:46.775005 12680 eager_op_function.cc:31953] Running Eager Final State API: reshape
+I0305 05:24:46.775027 12680 eager_op_function.cc:31978] CurrentDeviceId: 0 from 0
+I0305 05:24:46.775048 12680 dygraph_functions.cc:65200] Running AD API: reshape
+I0305 05:24:46.775058 12680 dygraph_functions.cc:65223]  No Type Promotion for reshape_ad_func api. 
+I0305 05:24:46.775061 12680 dygraph_functions.cc:65226]  No Type Autocast for reshape_ad_func api. 
+I0305 05:24:46.775072 12680 dygraph_functions.cc:65249] Running C++ API: reshape
+I0305 05:24:46.775105 12680 dygraph_functions.cc:65260] { Input: [ 
+( x , [{Name: None, Initialized: 1, Ptr: 0x4fe532e0,TensorInfo: [ Type: DenseTensor, Dtype: int64, Place: Place(gpu:0), Shape: 16, DistAttr: Unknown ], ADInfo:[ None ]}]), ]} 
+I0305 05:24:46.775131 12680 api.cc:92757] reshape API kernel key: [GPUDNN, NCHW, int64]
+I0305 05:24:46.775147 12680 api.cc:92764] reshape kernel: {"input":["GPU, STRIDED, int64"],"output":["GPU, STRIDED, int64"],"attribute":["IntArray"]}
+I0305 05:24:46.775169 12680 api.cc:92783] Perform View between Output and Input Tensor, share allocation and inplace version.
+I0305 05:24:46.775205 12680 dygraph_functions.cc:65327] Finish AD API: reshape
+I0305 05:24:46.775228 12680 dygraph_functions.cc:65341] { Input: [ 
+( x , [{Name: None, Initialized: 1, Ptr: 0x4fe532e0,TensorInfo: [ Type: DenseTensor, Dtype: int64, Place: Place(gpu:0), Shape: 16, DistAttr: Unknown ], ADInfo:[ None ]}]), ],  
+ Output: [ 
+( out , [{Name: None, Initialized: 1, Ptr: 0x59cdcb0,TensorInfo: [ Type: DenseTensor, Dtype: int64, Place: Place(gpu:0), Shape: 4, 4, DistAttr: Unknown ], ADInfo:[ Grad: [ {Name: None, Initialized: 0, Ptr: 0,TensorInfo: [ Unknown ], ADInfo:[ None ]} ],  GradNode: [ None ], StopGradient: [ 1 ] ]}]), ] } 
+I0305 05:24:46.775276 12680 eager_properties.cc:614] eager_properties 'Shape' method, layout autotune  desired_layout: Undefined(AnyLayout) default_layout: Undefined(AnyLayout) tensor layout: NCHW tensor's shape size is : 2
+I0305 05:24:46.775733 12680 eager_method.cc:368] Getting DenseTensor's numpy value
+I0305 05:24:46.775770 12680 allocator_facade.cc:382] [GetAllocator] place = Place(cpu) size = 256 Allocator = 0x1d96350
+I0305 05:24:46.775893 12680 eager_properties.cc:614] eager_properties 'Shape' method, layout autotune  desired_layout: Undefined(AnyLayout) default_layout: Undefined(AnyLayout) tensor layout: NCHW tensor's shape size is : 2
+I0305 05:24:46.775913 12680 eager_properties.cc:614] eager_properties 'Shape' method, layout autotune  desired_layout: Undefined(AnyLayout) default_layout: Undefined(AnyLayout) tensor layout: NCHW tensor's shape size is : 2
+I0305 05:24:46.776281 12680 eager_properties.cc:614] eager_properties 'Shape' method, layout autotune  desired_layout: Undefined(AnyLayout) default_layout: Undefined(AnyLayout) tensor layout: NCHW tensor's shape size is : 2
 before shard,
 ======================== x is Tensor(shape=[4, 4], dtype=int64, place=Place(gpu:0), stop_gradient=True,
        [[0 , 1 , 2 , 3 ],
@@ -8,17 +149,110 @@ before shard,
         [8 , 9 , 10, 11],
         [12, 13, 14, 15]])
 ========================
-dist_x._local_value().numpy() is [[0 1 2 3]
- [4 5 6 7]]
+I0305 05:24:46.776430 12680 eager.cc:920]  args_num: 1
+I0305 05:24:46.776443 12680 eager.cc:1056] Calling case5's or case6's or case7's initializer.
+I0305 05:24:46.776485 12680 eager.cc:251] Do TensorCopy from DenseTensor to DistTensor.
+W0305 05:24:46.776504 12680 dist_tensor.cc:52] WARNING: Tensor dim 0 is already sharded on mesh dim0. Sharding a tensor dim with multiple mesh dim is not supported yet.
+I0305 05:24:46.776551 12680 dist_tensor.cc:219] Reshard tensor: reshard from {Global Shape: 4, 4, Local Shape: 4, 4, DistAttr: {process_mesh: {shape: [2,1], process_ids: [0,1], dim_names: [x,y]}, dims_mappings: [-1,-1], batch_dim: 0, chunk_id: 0, skip_check_mesh: 0, dynamic_dims: [0,0], annotated: [], partial: [].}} to {DistAttr: {process_mesh: {shape: [2,1], process_ids: [0,1], dim_names: [x,y]}, dims_mappings: [1,-1], batch_dim: 0, chunk_id: 0, skip_check_mesh: 0, dynamic_dims: [0,0], annotated: [dims_mapping: 1,process_mesh: 1], partial: [].}}
+I0305 05:24:46.776608 12680 reshard_function_registry.cc:39] Choose ReshardFunction: SameNdMeshReshard
+I0305 05:24:46.776618 12680 context_pool.cc:62] DeviceContextPool Get: Place(gpu:0)
+I0305 05:24:46.776628 12680 nd_mesh_reshard_function.cc:94] Call SameNdMeshReshard
+I0305 05:24:46.776638 12680 dist_attr.cc:159] [TensorDistAttr verify_process_mesh] {shape: [2,1], process_ids: [0,1], dim_names: [x,y]}
+I0305 05:24:46.776648 12680 dist_attr.cc:174] [TensorDistAttr verify_dims_mapping] -1,-1
+I0305 05:24:46.776654 12680 dist_attr.cc:238] [TensorDistAttr verify_partial_status] []
+I0305 05:24:46.776661 12680 nd_mesh_reshard_function.cc:231] Step4: out_mesh axis : 1; partial state :0
+I0305 05:24:46.776667 12680 reshard_utils.cc:71] Searching current global rank 0 in process_mesh {shape: [2,1], process_ids: [0,1], dim_names: [x,y]}
+I0305 05:24:46.776685 12680 dist_attr.cc:159] [TensorDistAttr verify_process_mesh] {shape: [1], process_ids: [0], dim_names: [y]}
+I0305 05:24:46.776695 12680 dist_attr.cc:174] [TensorDistAttr verify_dims_mapping] -1,-1
+I0305 05:24:46.776700 12680 dist_attr.cc:238] [TensorDistAttr verify_partial_status] []
+I0305 05:24:46.776706 12680 r_to_s_reshard_function.cc:48] Call RToSReshard
+I0305 05:24:46.776711 12680 reshard_utils.cc:71] Searching current global rank 0 in process_mesh {shape: [1], process_ids: [0], dim_names: [y]}
+I0305 05:24:46.776717 12680 r_to_s_reshard_function.cc:63] RToSReshard: Tensor will be split on axis 0. Split will use axis 0 of process_mesh. There will have 1 process participate in.
+I0305 05:24:46.776736 12680 r_to_s_reshard_function.cc:80] Call `Split` in Resharding on device.
+I0305 05:24:46.776844 12680 auto_growth_best_fit_allocator.cc:159] Not found and reallocate 256(0x7fcf15400200), and remaining 0
+I0305 05:24:46.776873 12680 memcpy.cc:383] memory::Copy 128 Bytes from Place(gpu:0) to Place(gpu:0) by stream(0x75dd8c0)
+I0305 05:24:46.776912 12680 r_to_s_reshard_function.cc:82] The current process will remain the idx 0 piece of tensor
+I0305 05:24:46.776923 12680 dist_attr.cc:159] [TensorDistAttr verify_process_mesh] {shape: [1], process_ids: [0], dim_names: [y]}
+I0305 05:24:46.776929 12680 dist_attr.cc:174] [TensorDistAttr verify_dims_mapping] 0,-1
+I0305 05:24:46.776934 12680 dist_attr.cc:238] [TensorDistAttr verify_partial_status] []
+I0305 05:24:46.776943 12680 dist_attr.cc:159] [TensorDistAttr verify_process_mesh] {shape: [2,1], process_ids: [0,1], dim_names: [x,y]}
+I0305 05:24:46.776953 12680 dist_attr.cc:174] [TensorDistAttr verify_dims_mapping] 1,-1
+I0305 05:24:46.776957 12680 dist_attr.cc:238] [TensorDistAttr verify_partial_status] []
+I0305 05:24:46.776968 12680 eager.cc:257] Same place, do ShareDataWith for DistTensor.
+I0305 05:24:46.776988 12680 accumulation_node.h:30] Construct GradNodeAccumulation
+I0305 05:24:46.777012 12680 eager_method.cc:368] Getting DenseTensor's numpy value
+I0305 05:24:46.777025 12680 allocator_facade.cc:382] [GetAllocator] place = Place(cpu) size = 256 Allocator = 0x1d96350
+dist_x._local_value().numpy() is [[ 0  1  2  3]
+ [ 4  5  6  7]
+ [ 8  9 10 11]
+ [12 13 14 15]]
+I0305 05:24:46.777416 12680 eager.cc:920]  args_num: 1
+I0305 05:24:46.777433 12680 eager.cc:1056] Calling case5's or case6's or case7's initializer.
+I0305 05:24:46.777468 12680 eager.cc:251] Do TensorCopy from DenseTensor to DistTensor.
+I0305 05:24:46.777500 12680 dist_tensor.cc:219] Reshard tensor: reshard from {Global Shape: 4, 4, Local Shape: 4, 4, DistAttr: {process_mesh: {shape: [2], process_ids: [0,1], dim_names: [x]}, dims_mappings: [-1,-1], batch_dim: 0, chunk_id: 0, skip_check_mesh: 0, dynamic_dims: [0,0], annotated: [], partial: [].}} to {DistAttr: {process_mesh: {shape: [2], process_ids: [0,1], dim_names: [x]}, dims_mappings: [0,-1], batch_dim: 0, chunk_id: 0, skip_check_mesh: 0, dynamic_dims: [0,0], annotated: [dims_mapping: 1,process_mesh: 1], partial: [].}}
+I0305 05:24:46.777536 12680 reshard_function_registry.cc:39] Choose ReshardFunction: RToSReshard
+I0305 05:24:46.777541 12680 context_pool.cc:62] DeviceContextPool Get: Place(gpu:0)
+I0305 05:24:46.777550 12680 r_to_s_reshard_function.cc:48] Call RToSReshard
+I0305 05:24:46.777555 12680 reshard_utils.cc:71] Searching current global rank 0 in process_mesh {shape: [2], process_ids: [0,1], dim_names: [x]}
+I0305 05:24:46.777561 12680 r_to_s_reshard_function.cc:63] RToSReshard: Tensor will be split on axis 0. Split will use axis 0 of process_mesh. There will have 2 process participate in.
+I0305 05:24:46.777566 12680 r_to_s_reshard_function.cc:80] Call `Split` in Resharding on device.
+I0305 05:24:46.777618 12680 auto_growth_best_fit_allocator.cc:159] Not found and reallocate 256(0x7fcf15400400), and remaining 0
+I0305 05:24:46.777645 12680 auto_growth_best_fit_allocator.cc:159] Not found and reallocate 256(0x7fcf15400600), and remaining 0
+I0305 05:24:46.777662 12680 memcpy.cc:383] memory::Copy 64 Bytes from Place(gpu:0) to Place(gpu:0) by stream(0x75dd8c0)
+I0305 05:24:46.777693 12680 memcpy.cc:383] memory::Copy 64 Bytes from Place(gpu:0) to Place(gpu:0) by stream(0x75dd8c0)
+I0305 05:24:46.777714 12680 r_to_s_reshard_function.cc:82] The current process will remain the idx 0 piece of tensor
+I0305 05:24:46.777724 12680 dist_attr.cc:159] [TensorDistAttr verify_process_mesh] {shape: [2], process_ids: [0,1], dim_names: [x]}
+I0305 05:24:46.777731 12680 dist_attr.cc:174] [TensorDistAttr verify_dims_mapping] 0,-1
+I0305 05:24:46.777736 12680 dist_attr.cc:238] [TensorDistAttr verify_partial_status] []
+I0305 05:24:46.777753 12680 eager.cc:257] Same place, do ShareDataWith for DistTensor.
+I0305 05:24:46.777779 12680 accumulation_node.h:30] Construct GradNodeAccumulation
+I0305 05:24:46.777802 12680 eager_method.cc:368] Getting DenseTensor's numpy value
+I0305 05:24:46.777822 12680 allocator_facade.cc:382] [GetAllocator] place = Place(cpu) size = 256 Allocator = 0x1d96350
 dist_z._local_value().numpy() is [[0 1 2 3]
  [4 5 6 7]]
-_local_value不变
+I0305 05:24:46.778088 12680 eager_method.cc:368] Getting DenseTensor's numpy value
+I0305 05:24:46.778105 12680 allocator_facade.cc:382] [GetAllocator] place = Place(cpu) size = 256 Allocator = 0x1d96350
+I0305 05:24:46.778154 12680 eager_method.cc:368] Getting DenseTensor's numpy value
+I0305 05:24:46.778167 12680 allocator_facade.cc:382] [GetAllocator] place = Place(cpu) size = 256 Allocator = 0x1d96350
+_local_value改变
+I0305 05:24:46.778232 12680 eager_properties.cc:614] eager_properties 'Shape' method, layout autotune  desired_layout: Undefined(AnyLayout) default_layout: Undefined(AnyLayout) tensor layout: NCHW tensor's shape size is : 2
 mesh is {shape: [2,1], process_ids: [0,1], dim_names: [x,y]}
 placements is [Replicate(), Replicate()]
-I0221 10:15:28.972242 40681 tcp_utils.cc:185] The server starts to listen on IP_ANY:45254; setting synclog to 2048
-I0221 10:15:28.972488 40681 tcp_utils.cc:134] Successfully connected to 10.44.14.13:45254
-after shard,
-======================== dist_x is Tensor(shape=[4, 4], dtype=int64, place=Place(gpu:0), stop_gradient=True, process_mesh={shape: [2,1], process_ids: [0,1], dim_names: [x,y]}, placements=[Shard(dim=0), Shard(dim=1)], GlobalDenseTensor=
+I0305 05:24:46.778388 12680 eager_properties.cc:614] eager_properties 'Shape' method, layout autotune  desired_layout: Undefined(AnyLayout) default_layout: Undefined(AnyLayout) tensor layout: NCHW tensor's shape size is : 2
+I0305 05:24:46.778520 12680 reshard_fwd_func.cc:25] Running AD API: reshard dygraph
+I0305 05:24:46.778539 12680 context_pool.cc:62] DeviceContextPool Get: Place(gpu:0)
+I0305 05:24:46.778559 12680 tensor_utils.cc:209] Reshard func: tensor(generated_tensor_0) reshard from {Global Shape: 4, 4, Local Shape: 4, 4, DistAttr: {process_mesh: {shape: [2,1], process_ids: [0,1], dim_names: [x,y]}, dims_mappings: [1,-1], batch_dim: 0, chunk_id: 0, skip_check_mesh: 0, dynamic_dims: [0,0], annotated: [], partial: [].}} to {DistAttr: {process_mesh: {shape: [2,1], process_ids: [0,1], dim_names: [x,y]}, dims_mappings: [-1,-1], batch_dim: 0, chunk_id: 0, skip_check_mesh: 0, dynamic_dims: [0,0], annotated: [dims_mapping: 1,process_mesh: 1], partial: [].}}
+I0305 05:24:46.778594 12680 reshard_function_registry.cc:39] Choose ReshardFunction: SameNdMeshReshard
+I0305 05:24:46.778604 12680 nd_mesh_reshard_function.cc:94] Call SameNdMeshReshard
+I0305 05:24:46.778612 12680 dist_attr.cc:159] [TensorDistAttr verify_process_mesh] {shape: [2,1], process_ids: [0,1], dim_names: [x,y]}
+I0305 05:24:46.778618 12680 dist_attr.cc:174] [TensorDistAttr verify_dims_mapping] 1,-1
+I0305 05:24:46.778625 12680 dist_attr.cc:238] [TensorDistAttr verify_partial_status] []
+I0305 05:24:46.778631 12680 nd_mesh_reshard_function.cc:152] Step2: in_mesh axis 1
+I0305 05:24:46.778637 12680 reshard_utils.cc:71] Searching current global rank 0 in process_mesh {shape: [2,1], process_ids: [0,1], dim_names: [x,y]}
+I0305 05:24:46.778664 12680 dist_attr.cc:159] [TensorDistAttr verify_process_mesh] {shape: [1], process_ids: [0], dim_names: [y]}
+I0305 05:24:46.778674 12680 dist_attr.cc:174] [TensorDistAttr verify_dims_mapping] 0,-1
+I0305 05:24:46.778679 12680 dist_attr.cc:238] [TensorDistAttr verify_partial_status] []
+I0305 05:24:46.778685 12680 s_to_r_reshard_function.cc:112] Call SToRReshard
+I0305 05:24:46.778689 12680 s_to_r_reshard_function.cc:124] Balanced reshard from shard to replicated
+I0305 05:24:46.778698 12680 reshard_utils.cc:99] local world size: 1 local rank: 0
+I0305 05:24:46.778754 12680 tcp_utils.cc:185] The server starts to listen on IP_ANY:50095; setting synclog to 2048
+I0305 05:24:46.779036 12680 tcp_utils.cc:134] Successfully connected to 10.44.14.29:50095
+I0305 05:24:49.804903 12680 dynamic_loader.cc:225] Try to find library: libnccl.so from default system path.
+I0305 05:24:50.028712 12680 comm_context_manager.cc:93] init NCCLCommContext rank: 0, size: 1, unique_comm_key: ReshardGroup/0, unique_key: NCCLCommContext/ReshardGroup/0, nccl_id: 9b23c6999c86959e208ce7a2ce1d000000000000000000000000801a375000005079d91000031fccdbecf7f00801a37500000b8e8590ff7f0050795100000223e6b272d3f60b0e9590ff7f001079d91000090e9590ff7f005079d910000
+I0305 05:24:50.091110 12680 s_to_r_reshard_function.cc:50] Call `AllGather` in Resharding on device.
+I0305 05:24:50.091315 12680 dist_attr.cc:159] [TensorDistAttr verify_process_mesh] {shape: [1], process_ids: [0], dim_names: [y]}
+I0305 05:24:50.091354 12680 dist_attr.cc:174] [TensorDistAttr verify_dims_mapping] -1,-1
+I0305 05:24:50.091364 12680 dist_attr.cc:238] [TensorDistAttr verify_partial_status] []
+I0305 05:24:50.091409 12680 dist_attr.cc:159] [TensorDistAttr verify_process_mesh] {shape: [2,1], process_ids: [0,1], dim_names: [x,y]}
+I0305 05:24:50.091434 12680 dist_attr.cc:174] [TensorDistAttr verify_dims_mapping] -1,-1
+I0305 05:24:50.091441 12680 dist_attr.cc:238] [TensorDistAttr verify_partial_status] []
+I0305 05:24:50.091578 12680 eager_method.cc:345] Getting DistTensor's numpy value
+I0305 05:24:50.091600 12680 allocator_facade.cc:382] [GetAllocator] place = Place(cpu) size = 256 Allocator = 0x1d96350
+I0305 05:24:50.091733 12680 eager_properties.cc:614] eager_properties 'Shape' method, layout autotune  desired_layout: Undefined(AnyLayout) default_layout: Undefined(AnyLayout) tensor layout: NCHW tensor's shape size is : 2
+I0305 05:24:50.091764 12680 eager_properties.cc:614] eager_properties 'Shape' method, layout autotune  desired_layout: Undefined(AnyLayout) default_layout: Undefined(AnyLayout) tensor layout: NCHW tensor's shape size is : 2
+I0305 05:24:50.092212 12680 eager_properties.cc:614] eager_properties 'Shape' method, layout autotune  desired_layout: Undefined(AnyLayout) default_layout: Undefined(AnyLayout) tensor layout: NCHW tensor's shape size is : 2
+shard后,
+======================== dist_x is Tensor(shape=[4, 4], dtype=int64, place=Place(gpu:0), stop_gradient=True, process_mesh={shape: [2,1], process_ids: [0,1], dim_names: [x,y]}, placements=[Replicate(), Shard(dim=0)], GlobalDenseTensor=
        [[0 , 1 , 2 , 3 ],
         [4 , 5 , 6 , 7 ],
         [8 , 9 , 10, 11],
@@ -27,24 +261,36 @@ after shard,
 mesh is shape [2], process_ids [0, 1], dim_names ['x']
 placements is [Shard(dim=0)]
 进入到判断当中
-src_placements is [Shard(dim=0), Shard(dim=1)],
+src_placements is [Replicate(), Shard(dim=0)],
 src_mesh is {shape: [2,1], process_ids: [0,1], dim_names: [x,y]}
 dst_placements is [Shard(dim=0)],
 dst_mesh is shape [2], process_ids [0, 1], dim_names ['x']
 src_mesh.shape[1] is 1
 src_len is 2,dst_len is 1
 only reshard mesh shape,走对了就是这条路!
-mesh is {shape: [2], process_ids: [0,1], dim_names: [x]}
-placements is [Replicate()]
-after reshard,
-======================== dist_y is Tensor(shape=[4, 4], dtype=int64, place=Place(gpu:0), stop_gradient=True, process_mesh={shape: [2], process_ids: [0,1], dim_names: [x]}, placements=[Shard(dim=0)], GlobalDenseTensor=
-       [[0 , 1 , 2 , 3 ],
-        [4 , 5 , 6 , 7 ],
-        [8 , 9 , 10, 11],
-        [12, 13, 14, 15]])
-========================
-dist_y._local_value().numpy() is [[0 1 2 3]
- [4 5 6 7]]
- dist_x._local_value().numpy() is [[0 1 2 3]
- [4 5 6 7]]
-I0221 10:15:29.568401 40748 tcp_store.cc:292] receive shutdown event and so quit from MasterDaemon run loop
+I0305 05:24:50.092640 12680 eager_properties.cc:614] eager_properties 'Shape' method, layout autotune  desired_layout: Undefined(AnyLayout) default_layout: Undefined(AnyLayout) tensor layout: NCHW tensor's shape size is : 2
+I0305 05:24:50.092665 12680 eager_properties.cc:614] eager_properties 'Shape' method, layout autotune  desired_layout: Undefined(AnyLayout) default_layout: Undefined(AnyLayout) tensor layout: NCHW tensor's shape size is : 2
+I0305 05:24:50.092798 12680 eager_properties.cc:614] eager_properties 'Shape' method, layout autotune  desired_layout: Undefined(AnyLayout) default_layout: Undefined(AnyLayout) tensor layout: NCHW tensor's shape size is : 2
+Traceback (most recent call last):
+  File "semi_auto_parallel_moe_utils.py", line 222, in <module>
+    TestMoEUtils().run_test_case()
+  File "semi_auto_parallel_moe_utils.py", line 218, in run_test_case
+    self.test_reshard_mesh_shape_shard()
+  File "semi_auto_parallel_moe_utils.py", line 203, in test_reshard_mesh_shape_shard
+    dist_y = dist.reshard(
+  File "/home/aistudio/.local/lib/python3.8/site-packages/paddle/distributed/auto_parallel/api.py", line 836, in reshard
+    return _reshard_mesh_shape(dist_tensor, mesh, placements)
+  File "/home/aistudio/.local/lib/python3.8/site-packages/paddle/distributed/auto_parallel/moe_utils.py", line 449, in _reshard_mesh_shape
+    return _dist_reshape(dist_tensor, dist_tensor.shape, mesh, dst_placements)
+  File "/home/aistudio/.local/lib/python3.8/site-packages/paddle/distributed/auto_parallel/moe_utils.py", line 342, in _dist_reshape
+    assert np.prod(tgt_local_shape) == np.prod(
+AssertionError: The local shapes [4, 4] and [2, 4] are mismatched.
+I0305 05:24:50.095125 12680 imperative.cc:699] Tracer(0x588db90) set expected place Place(gpu:0)
+I0305 05:24:50.095209 12680 global_utils.h:89] Set current tracer for Controller: 0
+I0305 05:24:50.095225 12680 tracer.cc:86] Set current tracer: 0
+I0305 05:24:50.095304 12680 mmap_allocator.cc:346] PID: 12680, MemoryMapFdSet: set size - 0
+I0305 05:24:50.106586 12680 mmap_allocator.cc:346] PID: 12680, MemoryMapFdSet: set size - 0
+I0305 05:24:50.166396 12680 accumulation_node.h:43] Destruct GradNodeAccumulation
+I0305 05:24:50.166484 12680 accumulation_node.h:43] Destruct GradNodeAccumulation
+I0305 05:24:50.311771 12680 mmap_allocator.cc:346] PID: 12680, MemoryMapFdSet: set size - 0
+I0305 05:24:50.358466 12748 tcp_store.cc:292] receive shutdown event and so quit from MasterDaemon run loop
