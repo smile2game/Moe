@@ -89,16 +89,16 @@ class Tensor:
 # 测试代码
 
 dist_tensor = Tensor(
-    shape=[4, 4],  # 3维张量
+    shape=[4, 6,4,4,10],  # 3维张量
     process_mesh=ProcessMesh(
-        shape=[2],  # 2维网格
-        process_ids=[0, 1],
-        dim_names=['x']
+        shape=[2,2,2,2],  # 4维网格
+        process_ids=[0,1,2,3,4,5,6,7],
+        dim_names=['x','y','z','w']
     ),
-    placements=[Shard(0)]  # 第0维沿网格第0维分片，第1维沿网格第1维分片
+    placements=[Shard(0),Shard(1),Shard(2),Shard(3)]  # 第0维沿网格第0维分片，第1维沿网格第1维分片
 )
 
 # 总进程数 = 2 * 2 = 4
-for rank in range(2):
+for rank in range(16):
     slices = get_local_slice(dist_tensor, dist_tensor.process_mesh, dist_tensor.placements, rank)
-    print(f"Rank {rank} 存储的索引: {slices[0]},{slices[1]}")
+    print(f"Rank {rank} 存储的索引: dim0={slices[0]},dim1={slices[1]},dim2={slices[2]},dim3={slices[3]},dim4={slices[4]}")

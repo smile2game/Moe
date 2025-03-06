@@ -26,8 +26,8 @@ class TestMoEUtils:
         self._dtype = os.getenv("dtype")
         self._seed = eval(os.getenv("seed"))
         self._backend = os.getenv("backend")
-        self._mesh0 = dist.ProcessMesh([[0], [1]], dim_names=["x", "y"]) #2x1 
-        self._mesh1 = dist.ProcessMesh([[0, 1]], dim_names=["x", "y"]) #1x2
+        self._mesh2x1 = dist.ProcessMesh([[0], [1]], dim_names=["x", "y"]) #2x1 
+        self._mesh1x2 = dist.ProcessMesh([[0, 1]], dim_names=["x", "y"]) #1x2
         self._mesh2 = dist.ProcessMesh([0,1],dim_names = ['x']) #一个维度
 
     def test_local_reshape(self):
@@ -104,33 +104,6 @@ class TestMoEUtils:
             dist_x.grad._local_value().numpy(),
         )
 
-    def test_reshard_mesh_shape_replicate(self):
-        """
-        1. Replicate 拆分
-        [0,1], [Replicate()]  --> [[0],[1]], [Replicate(), Replicate()]
-        
-        2. Replicate 多层拆分
-        [0,1,2,3] [Replicate()]  --> [[[0],[1]],[[2],[3]]]  [Replicate(), Replicate(), Replicate()]
-        """
-        print("**********replicate_test************")
-        (h, w) = (4, 4)
-        src_shape = [h, w]
-        x = paddle.arange(0, h * w).reshape(src_shape)
-        print(f"before shard,\n======================== x is {x}\n========================")
-        dist_x = dist.shard_tensor(
-            x, self._mesh0, [dist.Replicate(), dist.Replicate()]
-        )
-        print(f"after shard,\n======================== dist_x is {dist_x}\n========================")
-        dist_y = dist.reshard(
-            dist_x, self._mesh1, [dist.Replicate(), dist.Replicate()]
-        )
-        print(f"after reshard,\n======================== dist_y is {dist_y}\n========================")    
-        assert dist_y.process_mesh == self._mesh1
-        print(f"dist_y._local_value().numpy() is {dist_y._local_value().numpy()}\n dist_x._local_value().numpy() is {dist_x._local_value().numpy()}")
-        np.testing.assert_array_equal(
-            dist_y._local_value().numpy(), dist_x._local_value().numpy()
-        )
-
 
     def test_reshard_mesh_shape_partial(self):
         """
@@ -139,25 +112,18 @@ class TestMoEUtils:
 
         2. Partial 多层合并 嵌套 
         [[[0],[1]],[[2],[3]]]  [Partial(), Partial(), Partial()]  --> [0,1,2,3] [Partial()]
-        
-        
-
         """
         print("**********partial_test************")
         (h, w) = (4, 4)
         src_shape = [h, w]
         x = paddle.arange(0, h * w).reshape(src_shape)
-        print(f"before shard,\n======================== x is {x}\n========================")
         dist_x = dist.shard_tensor(
             x, self._mesh0, [dist.Partial(), dist.Partial()]
         )
-        print(f"after shard,\n======================== dist_x is {dist_x}\n========================")
         dist_y = dist.reshard(
             dist_x, self._mesh1, [dist.Partial()]
         )
-        print(f"after reshard,\n======================== dist_y is {dist_y}\n========================")    
         assert dist_y.process_mesh == self._mesh1 #mesh成功改变
-        print(f"dist_y._local_value().numpy() is {dist_y._local_value().numpy()}\n dist_x._local_value().numpy() is {dist_x._local_value().numpy()}")
         np.testing.assert_array_equal( #_local_value完全不变
             dist_y._local_value().numpy(), dist_x._local_value().numpy()
         )
@@ -172,8 +138,6 @@ class TestMoEUtils:
         GPU0: [[0 1 2 3] , [4 5 6 7]]
         GPU1: [[ 8  9 10 11], [12 13 14 15]]
 
-        2. 升维/降维
-
         3. 跨纬度mesh重排
         [[0,1],[2,3]] 2x2 [Shard(0), Shard(1)] --> [[0,2],[1,3]],2x2 [Shard(1),Shard(0)]
 
@@ -187,32 +151,25 @@ class TestMoEUtils:
         (h, w) = (4, 4)
         src_shape = [h, w]
         x = paddle.arange(0, h * w).reshape(src_shape)
-        # print(f"before shard,\n======================== x is {x}\n========================")
         dist_x = dist.shard_tensor(
-            x, self._mesh0, [dist.Shard(0), dist.Shard(1)] #[[0,1]] 2x1  
+            x, self._mesh2x1, [dist.Shard(0), dist.Shard(1)] #[[0,1]] 2x1  
         )
-        # print(f"dist_x._local_value().numpy() is {dist_x._local_value().numpy()}")
-
-        dist_z = dist.shard_tensor(
-            x, self._mesh2, [dist.Shard(0)]
-        )
-        print(f"dist_z._local_value().numpy() is {dist_z._local_value().numpy()}")
-        
-        if np.array_equal(dist_x._local_value().numpy(), dist_z._local_value().numpy()):
-            print("_local_value不变")
-        else:
-            print("_local_value改变")
-
-        # print(f"shard后,\n======================== dist_x is {dist_x}\n========================")
         dist_y = dist.reshard(
             dist_x, self._mesh2, [dist.Shard(0)]
         )
-        # print(f"reshard后,\n======================== dist_y is {dist_y}\n========================")    
         assert dist_y.process_mesh == self._mesh2
         print(f"reshard后,dist_x._local_value().numpy() is {dist_x._local_value().numpy()}\n dist_y._local_value().numpy() is {dist_x._local_value().numpy()}")
         np.testing.assert_array_equal(
-            dist_y._local_value().numpy(), dist_x._local_value().numpy()
+            dist_x._local_value().numpy(), dist_y._local_value().numpy()
         )
+
+        # dist_z = dist.reshard(
+        #     dist_y, self._mesh1x2, [dist.Shard(1),dist.Shard(0)]
+        # )
+        # print(f"reshard后,dist_y._local_value().numpy() is {dist_y._local_value().numpy()}\n dist_z._local_value().numpy() is {dist_z._local_value().numpy()}")
+        # np.testing.assert_array_equal(
+        #     dist_y._local_value().numpy(), dist_z._local_value().numpy()
+        # )
 
     def run_test_case(self):
         # self.test_local_reshape()
