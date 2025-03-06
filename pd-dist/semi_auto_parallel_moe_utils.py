@@ -187,11 +187,11 @@ class TestMoEUtils:
         (h, w) = (4, 4)
         src_shape = [h, w]
         x = paddle.arange(0, h * w).reshape(src_shape)
-        print(f"before shard,\n======================== x is {x}\n========================")
+        # print(f"before shard,\n======================== x is {x}\n========================")
         dist_x = dist.shard_tensor(
             x, self._mesh0, [dist.Shard(0), dist.Shard(1)] #[[0,1]] 2x1  
         )
-        print(f"dist_x._local_value().numpy() is {dist_x._local_value().numpy()}")
+        # print(f"dist_x._local_value().numpy() is {dist_x._local_value().numpy()}")
 
         dist_z = dist.shard_tensor(
             x, self._mesh2, [dist.Shard(0)]
@@ -203,13 +203,13 @@ class TestMoEUtils:
         else:
             print("_local_value改变")
 
-        print(f"shard后,\n======================== dist_x is {dist_x}\n========================")
+        # print(f"shard后,\n======================== dist_x is {dist_x}\n========================")
         dist_y = dist.reshard(
             dist_x, self._mesh2, [dist.Shard(0)]
         )
-        print(f"reshard后,\n======================== dist_y is {dist_y}\n========================")    
+        # print(f"reshard后,\n======================== dist_y is {dist_y}\n========================")    
         assert dist_y.process_mesh == self._mesh2
-        print(f"dist_y._local_value().numpy() is {dist_y._local_value().numpy()}\n dist_x._local_value().numpy() is {dist_x._local_value().numpy()}")
+        print(f"reshard后,dist_x._local_value().numpy() is {dist_x._local_value().numpy()}\n dist_y._local_value().numpy() is {dist_x._local_value().numpy()}")
         np.testing.assert_array_equal(
             dist_y._local_value().numpy(), dist_x._local_value().numpy()
         )
