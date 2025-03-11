@@ -72,7 +72,7 @@ def get_local_slice(dist_tensor, mesh, placements, rank):
             # 该维度被一个或多个网格维度分片
             M = shard_map[dim]  # 分片该维度的网格维度列表
             total_shards = 1
-            for m in M:
+            for m in M: #累乘求得2 mesh_dim对1 tensor_dim的总分片数
                 total_shards *= mesh_shape[m]
             
             dim_size = tensor_shape[dim]
@@ -80,7 +80,7 @@ def get_local_slice(dist_tensor, mesh, placements, rank):
                 raise ValueError(f"张量维度 {dim} 的大小 {dim_size} 必须能被总分片数 {total_shards} 整除")
             shard_size = dim_size // total_shards
 
-            # 计算当前 rank 在相关网格维度上的坐标和形状
+            # 计算当前 rank 在参与分片的网格维度上的坐标和形状，从而得到是第几个分片
             coords_M = [coords[m] for m in M]
             shape_M = [mesh_shape[m] for m in M]
             k = compute_linear_index(coords_M, shape_M)
@@ -117,25 +117,25 @@ class Tensor:
 
 
 if __name__ == "__main__":
-    # 原始情况
-    dist_tensor = Tensor(
-        shape=[4, 4],
-        process_mesh=ProcessMesh(
-            shape=[2, 2],
-            process_ids=[0, 1, 2, 3],
-            dim_names=['x', 'y']
-        ),
-        placements=[Shard(0), Shard(1)]
-    )
+    # # 原始情况
+    # dist_tensor = Tensor(
+    #     shape=[4, 4],
+    #     process_mesh=ProcessMesh(
+    #         shape=[2, 2],
+    #         process_ids=[0, 1, 2, 3],
+    #         dim_names=['x', 'y']
+    #     ),
+    #     placements=[Shard(0), Shard(1)]
+    # )
 
-    for rank in range(4):
-        slices = get_local_slice(dist_tensor, dist_tensor.process_mesh, dist_tensor.placements, rank)
-        print(f"Rank {rank} 存储的索引: dim0={slices[0]}, dim1={slices[1]}")
+    # for rank in range(4):
+    #     slices = get_local_slice(dist_tensor, dist_tensor.process_mesh, dist_tensor.placements, rank)
+    #     print(f"Rank {rank} 存储的索引: dim0={slices[0]}, dim1={slices[1]}")
 
 
     #切两刀情况
     dist_tensor = Tensor(
-        shape=[8, 4],
+        shape=[4, 4],
         process_mesh=ProcessMesh(
             shape=[2, 2],
             process_ids=[0, 1, 2, 3],
@@ -145,5 +145,6 @@ if __name__ == "__main__":
     )
 
     for rank in range(4):
+    # rank = 3
         slices = get_local_slice(dist_tensor, dist_tensor.process_mesh, dist_tensor.placements, rank)
         print(f"Rank {rank} 存储的索引: dim0={slices[0]}, dim1={slices[1]}")
