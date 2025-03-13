@@ -49,7 +49,7 @@ def get_local_slice(dist_tensor, mesh, placements, rank):
     mesh_ndim = len(mesh_shape)      # 网格维度数
 
     # 步骤 1：构建 shard_map，允许一个张量维度被多个网格维度分片
-    shard_map = {}  # {tensor_dim: [mesh_dims]}
+    shard_map = {}  # {tensor_dim: [mesh_dims]} #(0:[0,1])
     for mesh_dim, placement in enumerate(placements):
         if placement.is_shard():
             tensor_dim = placement.get_dim()
@@ -60,21 +60,23 @@ def get_local_slice(dist_tensor, mesh, placements, rank):
             shard_map[tensor_dim].append(mesh_dim)
 
     # 步骤 2：获取当前 rank 在网格中的坐标
-    coords = get_coords_from_rank(mesh_shape, rank)
+    coords = get_coords_from_rank(mesh_shape, rank) #(1,1)
 
     # 步骤 3：为每个张量维度计算分片索引
     slices = []
-    for dim in range(tensor_ndim):
+    for dim in range(tensor_ndim): 
         if dim not in shard_map:
             # 未被分片的维度，取整个维度
             slices.append(slice(None))
-        else:
+        else: 
             # 该维度被一个或多个网格维度分片
             M = shard_map[dim]  # 分片该维度的网格维度列表
-            total_shards = 1
+            total_shards = 1 #mesh_0 = 2 x mesh_1 = 2 = 4 
             for m in M: #累乘求得2 mesh_dim对1 tensor_dim的总分片数
                 total_shards *= mesh_shape[m]
-            
+            if total_shards == 1:
+                slices.append(slice(None)) #(1,4) == None
+                continue
             dim_size = tensor_shape[dim]
             if dim_size % total_shards != 0:
                 raise ValueError(f"张量维度 {dim} 的大小 {dim_size} 必须能被总分片数 {total_shards} 整除")
@@ -88,8 +90,8 @@ def get_local_slice(dist_tensor, mesh, placements, rank):
             start = k * shard_size
             end = (k + 1) * shard_size
             slices.append(slice(start, end))
-    
     return slices
+
 
 # 定义辅助类（保持不变）
 class Shard:
@@ -146,5 +148,5 @@ if __name__ == "__main__":
 
     for rank in range(4):
     # rank = 3
-        slices = get_local_slice(dist_tensor, dist_tensor.process_mesh, dist_tensor.placements, rank)
+        slices = get_local_slice(dist_tensor, dist_tensor.process_mesh, dist_tensor.placements, rank) #dim0 = (3,4,None) dim1 = (None,None,None)
         print(f"Rank {rank} 存储的索引: dim0={slices[0]}, dim1={slices[1]}")
