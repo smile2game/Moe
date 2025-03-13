@@ -1,6 +1,6 @@
 **********shard_test************
-W0306 09:14:50.241175 24067 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 7.0, Driver API Version: 12.0, Runtime API Version: 11.8
-W0306 09:14:50.242154 24067 gpu_resources.cc:164] device: 0, cuDNN Version: 8.9.
+W0312 13:02:06.276816  5929 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 7.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0312 13:02:06.277716  5929 gpu_resources.cc:164] device: 0, cuDNN Version: 8.9.
 mesh is shape [2], process_ids [0, 1], dim_names ['x']
 placements is [Shard(dim=0)]
 src_indices is [[slice(0, 2, None), slice(None, None, None)]]

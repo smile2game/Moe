@@ -5,7 +5,5 @@ index,uuid,driver_version,name,gpu_serial,display_active,display_mode
 pid,process_name,gpu_uuid,gpu_name,used_memory
 
 index,utilization_gpu,memory_total,memory_used,memory_free,timestamp
-0,0,32768,3,32497,2025/03/06 09:14:48.355
-1,0,32768,3,32497,2025/03/06 09:14:48.355
-0,0,32768,3,32497,2025/03/06 09:14:53.397
-1,18,32768,3,32497,2025/03/06 09:14:53.398
+0,0,32768,3,32497,2025/03/12 13:02:04.511
+1,0,32768,3,32497,2025/03/12 13:02:04.512

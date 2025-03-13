@@ -1,6 +1,3 @@
-import numpy as np
-
-# 定义辅助类
 class Shard:
     def __init__(self, dim):
         self.dim = dim
@@ -109,6 +106,20 @@ if __name__ == "__main__":
         ),
         placements=[Shard(0), Shard(0)]
     )
+    print("----------------------------示例 1 - 2D 张量，2D 网格，2 次切分:---------------------------")
     sub_mesh2tensor_indices = get_local_slices(dist_tensor, dist_tensor.process_mesh, dist_tensor.placements)
-    print("示例 1 - 2D 张量，2D 网格，2 次切分:")
     print(f"sub_mesh2tensor_indices is {sub_mesh2tensor_indices}")
+
+    # 示例 2：3D 张量，3D 网格，3 次切分
+    dist_tensor2 = Tensor(
+        shape=[6, 6, 6],
+        process_mesh=ProcessMesh(
+            shape=[2, 3, 1],
+            process_ids=list(range(math.prod([2, 3, 1]))),
+            dim_names=['x', 'y', 'z']
+        ),
+        placements=[Shard(0), Shard(1), Shard(2)]  # 沿第 0、1、2 维切分
+    )
+    print("----------------------------示例 2 - 3D 张量，3D 网格，3 次切分:---------------------------")
+    sub_mesh2tensor_indices2 = get_local_slices(dist_tensor2, dist_tensor2.process_mesh, dist_tensor2.placements)
+    print(f"sub_mesh2tensor_indices is {sub_mesh2tensor_indices2}")

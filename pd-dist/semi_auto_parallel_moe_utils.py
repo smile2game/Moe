@@ -118,12 +118,12 @@ class TestMoEUtils:
         src_shape = [h, w]
         x = paddle.arange(0, h * w).reshape(src_shape)
         dist_x = dist.shard_tensor(
-            x, self._mesh0, [dist.Partial(), dist.Partial()]
+            x, self._mesh2x1, [dist.Partial(), dist.Partial()]
         )
         dist_y = dist.reshard(
-            dist_x, self._mesh1, [dist.Partial()]
+            dist_x, self._mesh2, [dist.Partial()]
         )
-        assert dist_y.process_mesh == self._mesh1 #mesh成功改变
+        assert dist_y.process_mesh == self._mesh2 #mesh成功改变
         np.testing.assert_array_equal( #_local_value完全不变
             dist_y._local_value().numpy(), dist_x._local_value().numpy()
         )
@@ -132,20 +132,10 @@ class TestMoEUtils:
         """
         1. Shard维度扩展且冗余
         [0,1], [Shard(0)] 2 --> [[0],[1]], [Shard(0), Shard(1)] 2x1
-
         [[0],[1]], [Shard(0), Shard(1)] 2x2 --> [0,1], [Shard(0)] 4
-        数据分布 4x4
-        GPU0: [[0 1 2 3] , [4 5 6 7]]
-        GPU1: [[ 8  9 10 11], [12 13 14 15]]
 
-        3. 跨纬度mesh重排
+        2. 跨纬度mesh重排
         [[0,1],[2,3]] 2x2 [Shard(0), Shard(1)] --> [[0,2],[1,3]],2x2 [Shard(1),Shard(0)]
-
-        数据分布:
-        GPU0  [[1 2],[5 6]]
-        GPU1  [[3 4],[7 8]]
-        GPU2  [[9 10],[13 14]]
-        GPU3  [[11 12],[15 16]]
         """
         print("**********shard_test************")
         (h, w) = (4, 4)
@@ -162,14 +152,6 @@ class TestMoEUtils:
         np.testing.assert_array_equal(
             dist_x._local_value().numpy(), dist_y._local_value().numpy()
         )
-
-        # dist_z = dist.reshard(
-        #     dist_y, self._mesh1x2, [dist.Shard(1),dist.Shard(0)]
-        # )
-        # print(f"reshard后,dist_y._local_value().numpy() is {dist_y._local_value().numpy()}\n dist_z._local_value().numpy() is {dist_z._local_value().numpy()}")
-        # np.testing.assert_array_equal(
-        #     dist_y._local_value().numpy(), dist_z._local_value().numpy()
-        # )
 
     def run_test_case(self):
         # self.test_local_reshape()

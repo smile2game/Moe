@@ -372,70 +372,77 @@ def _replace_dist_reshape_pass(dist_program):
             op.erase()
 
 
-def get_coords_from_rank(mesh_shape,rank):
-    """ 根据rank顺序,行优先坐标展开,依次求余数，更新缩小rank,得到在mesh_shape中的位置 """
-    indices = []  # 用来存储转换后的多维索引
-    for dim in mesh_shape:  # 从第一个维度开始处理
-        rank,index = divmod(rank,dim) #除法 求得 商和余数
-        indices.append(index)  # 获取当前维度的索引
-    return tuple(indices)  # 返回元组形式的多维索引
-
-
-def get_local_slice(dist_tensor, mesh, placements, rank):
+def shard_submesh_and_slice(sub_mesh, tensor_slice, tensor_dim, mesh_dim, global_mesh_shape):
+    """沿指定网格维度切分 sub_mesh 和对应的张量切片
+    Args:
+        sub_mesh: 当前子网格的进程 ID 元组
+        tensor_slice: 当前张量的切片，格式为 [(start1, end1), (start2, end2), ...]
+        tensor_dim: 张量的切分维度
+        mesh_dim: 网格的切分维度
+        global_mesh_shape: 全局网格的形状
+    Returns:
+        new_sub_meshes: 切分后的子网格列表
+        new_slices: 切分后的张量切片列表
     """
-    计算给定 rank 上存储的分布式张量的索引范围。
+    num_shards = global_mesh_shape[mesh_dim] #根据全局网格决定有几个shards
+    total_size = tensor_slice[tensor_dim][1] - tensor_slice[tensor_dim][0]
+    shard_size = total_size // num_shards  # 使用整除
+    
+    # 确保 total_size 能被 num_shards 整除
+    if total_size % num_shards != 0:
+        raise ValueError(f"Tensor dimension {tensor_dim} size {total_size} cannot be evenly divided by {num_shards}")
+    
+    # 将 sub_mesh 转换为数组并重塑为网格形状的一部分
+    new_sub_meshes = []
+    new_slices = []
 
-    参数:
-        dist_tensor: 分布式张量，包含 shape 属性（list 或 tuple）
-        mesh: ProcessMesh，包含 shape 属性（list 或 tuple）
-        placements: Placement 列表，长度与网格维度数相等，例如 [Shard(0), Replicate(), ...]
-        rank: 当前进程的 rank
+    for i in range(num_shards):
+        # 简单假设：沿 mesh_dim 维度平均切分子网格
+        start_idx = i * (len(sub_mesh) // num_shards)
+        end_idx = (i + 1) * (len(sub_mesh) // num_shards)
+        new_sub_mesh = tuple(sub_mesh[start_idx:end_idx])
+        new_sub_meshes.append(new_sub_mesh)
 
-    返回:
-        list of slice，每个元素是一个 slice 对象，表示该 rank 上张量的索引范围
+        # 切分张量切片
+        new_slice = list(tensor_slice)
+        start = tensor_slice[tensor_dim][0] + i * shard_size
+        end = start + shard_size
+        new_slice[tensor_dim] = (int(start), int(end))  # 强制转换为整数
+        new_slices.append(tuple(new_slice))
+    return new_sub_meshes, new_slices
+
+def get_local_slices(tensor, mesh, placements):
+    """计算每个 rank 的本地张量切片
+    Args:
+        tensor: 张量实例
+        mesh: 处理器网格实例
+        placements: 切分策略列表
+    Returns:
+        rank_slices: 字典，键为 rank ID，值为对应的张量切片
     """
-    tensor_shape = dist_tensor.shape  # 张量形状，例如 [4, 4, 4]
-    mesh_shape = mesh.shape          # 网格形状，例如 [2, 2]
-    tensor_ndim = len(tensor_shape)  # 张量维度数
-    mesh_ndim = len(mesh_shape)      # 网格维度数
+    sub_mesh2tensor_indices = {}
+    # 初始化：将整个张量分配给全局网格
+    initial_sub_mesh = tuple(mesh.process_ids)  # (0,1,2,3)
+    sub_mesh2tensor_indices[initial_sub_mesh] = [(0, s) for s in tensor.shape]
 
-    # 步骤 1：解析 placements，构建 {tensor_dim: mesh_dim} 映射
-    shard_map = {}  # 记录张量维度沿哪个网格维度分片
-    for mesh_dim, placement in enumerate(placements):
-        if placement.is_shard():
-            tensor_dim = placement.get_dim()
-            if tensor_dim >= tensor_ndim:
-                raise ValueError(f"张量维度 {tensor_dim} 超出张量实际维度数 {tensor_ndim}")
-            if tensor_dim in shard_map: #这个不确定要不要 写出来
-                raise ValueError(f"张量维度 {tensor_dim} 被多个网格维度分片，不支持")
-            shard_map[tensor_dim] = mesh_dim #tensor_dim -> mesh_dim
+    # 迭代处理每个 placement
+    for idx, placement in enumerate(placements):
+        tensor_dim = placement.get_dim()  # 张量的切分维度
+        mesh_dim = idx % len(mesh.shape)  # mesh的切分维度
 
-    # 步骤 2：获取当前 rank 在网格中的坐标
-    coords = get_coords_from_rank(mesh_shape, rank)
-
-    # 步骤 3：为每个张量维度计算分片索引
-    slices = []
-    for dim in range(tensor_ndim):
-        if dim in shard_map:  # 该维度被映射到某个网格维度
-            mesh_dim = shard_map[dim]
-            m = mesh_shape[mesh_dim]  # 网格维度大小
-            if m == 1:
-                # 网格维度大小为 1，视为未分片，返回 slice(None)
-                slices.append(slice(None)) #如果不加这个判断,返回0:all(会与None冲突)
-            else:
-                # 网格维度大小大于 1，正常计算分片
-                c = coords[mesh_dim]      # 当前进程在该网格维度的坐标
-                dim_size = tensor_shape[dim]  # 张量该维度的大小
-                if dim_size % m != 0:
-                    raise ValueError(f"张量维度 {dim} 的大小 {dim_size} 必须能被网格大小 {m} 整除")
-                shard_size = dim_size // m  # 每个分片的大小
-                start = c * shard_size #分片的起始索引
-                end = (c + 1) * shard_size
-                slices.append(slice(start, end)) 
-        else:
-            # 未分片的维度，保持完整
-            slices.append(slice(None))
-    return slices
+        new_sub_mesh2tensor_indices = {}
+        # 对当前所有的 sub_mesh 进行切分
+        for sub_mesh, tensor_slice in sub_mesh2tensor_indices.items():
+            #切分
+            new_sub_meshes, new_slices = shard_submesh_and_slice(
+                sub_mesh, tensor_slice, tensor_dim, mesh_dim, mesh.shape
+            )
+            #更新
+            for new_sub_mesh, new_slice in zip(new_sub_meshes, new_slices):
+                new_sub_mesh2tensor_indices[new_sub_mesh] = new_slice
+        sub_mesh2tensor_indices = new_sub_mesh2tensor_indices
+        print(f"第{idx}刀, sub_mesh2tensor_indices is {sub_mesh2tensor_indices}")
+    return sub_mesh2tensor_indices
 
 def _only_reshard_mesh_shape(
     dist_tensor: Tensor, mesh: ProcessMesh, placements: list[Placement]
@@ -457,16 +464,10 @@ def _only_reshard_mesh_shape(
         return False
 
     if src_placements[0].is_shard(): 
-        src_indices = []
-        dst_indices = []
-        for rank in src_mesh.process_ids:
-            src_indices.append(get_local_slice(dist_tensor, src_mesh, src_placements, rank))
-            dst_indices.append(get_local_slice(dist_tensor, mesh, placements, rank))
-            print(f"src_indices is {src_indices}")
-            print(f"dst_indices is {dst_indices}")
-            # Compare indices
-            if src_indices != dst_indices:
-                return False
+        src_indices = get_local_slices(dist_tensor, src_mesh, src_placements)
+        dst_indices = get_local_slices(dist_tensor, mesh, placements)
+        if src_indices != dst_indices:
+            return False
 
     if src_placements[0].is_partial():
         for p in src_placements + placements:
