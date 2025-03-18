@@ -75,7 +75,7 @@ def get_local_slices(tensor, mesh, placements):
     sub_mesh2tensor_indices[initial_sub_mesh] = [(0, s) for s in tensor.shape]
 
     # 迭代处理每个 placement
-    for mesh_dim, placement in enumerate(placements):
+    for mesh_dim, placement in enumerate(placements): #每个mesh_dim都有一个placement
         tensor_dim = placement.get_dim()  # 张量的切分维度
 
         new_sub_mesh2tensor_indices = {}
@@ -88,6 +88,7 @@ def get_local_slices(tensor, mesh, placements):
             #更新
             for new_sub_mesh, new_slice in zip(new_sub_meshes, new_slices):
                 new_sub_mesh2tensor_indices[new_sub_mesh] = new_slice
+            print(f"sub_mesh is {sub_mesh}, tensor_slice is {tensor_slice},new_sub_meshes is {new_sub_meshes}, new_slices is {new_slices}")
         sub_mesh2tensor_indices = new_sub_mesh2tensor_indices
         print(f"第{mesh_dim}刀, sub_mesh2tensor_indices is {sub_mesh2tensor_indices}")
     return sub_mesh2tensor_indices
