@@ -51,7 +51,7 @@ def get_sub_meshes_for_shard(sub_mesh, mesh_dim, global_mesh_shape):
         coords = [slice(None)] * len(global_mesh_shape)
         coords[mesh_dim] = i
         sub_process_ids = process_ids[tuple(coords)].flatten().tolist()
-        print(f"求sub_mesh,coords is {coords},sub_process_ids is {sub_process_ids}")
+        print(f"求sub_mesh,global_mesh_shape is {global_mesh_shape},coords is {coords},sub_process_ids is {sub_process_ids}")
         sub_meshes.append(tuple(sub_process_ids))
     return sub_meshes
 
