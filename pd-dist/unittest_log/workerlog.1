@@ -1,14 +1,25 @@
-**********shard_test************
-W0312 13:02:06.324915  5931 gpu_resources.cc:119] Please NOTE: device: 1, GPU Compute Capability: 7.0, Driver API Version: 12.0, Runtime API Version: 11.8
-W0312 13:02:06.326045  5931 gpu_resources.cc:164] device: 1, cuDNN Version: 8.9.
+W0324 15:58:39.250137  7605 gpu_resources.cc:119] Please NOTE: device: 1, GPU Compute Capability: 7.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0324 15:58:39.251010  7605 gpu_resources.cc:164] device: 1, cuDNN Version: 8.9.
 mesh is shape [2], process_ids [0, 1], dim_names ['x']
 placements is [Shard(dim=0)]
-src_indices is [[slice(0, 2, None), slice(None, None, None)]]
-dst_indices is [[slice(0, 2, None), slice(None, None, None)]]
-src_indices is [[slice(0, 2, None), slice(None, None, None)], [slice(2, 4, None), slice(None, None, None)]]
-dst_indices is [[slice(0, 2, None), slice(None, None, None)], [slice(2, 4, None), slice(None, None, None)]]
-only reshard mesh shape,走对了就是这条路!
-reshard后,dist_x._local_value().numpy() is [[ 8  9 10 11]
- [12 13 14 15]]
- dist_y._local_value().numpy() is [[ 8  9 10 11]
- [12 13 14 15]]
+---------------------------- Initial State ----------------------------
+Process Group (0, 1): Slice [(0, 4), (0, 4)], Partial Info {}
+-----------------------------------------------------------------
+---------------------------- Processing Placement 0: Replicate ----------------------------
+Process Group (0, 1): Slice [(0, 4), (0, 4)], Partial Info {}
+-----------------------------------------------------------------
+求sub_mesh,global_mesh_shape is [1, 2],coords is [slice(None, None, None), 0],sub_process_ids is [0]
+求sub_mesh,global_mesh_shape is [1, 2],coords is [slice(None, None, None), 1],sub_process_ids is [1]
+---------------------------- Processing Placement 1: Shard ----------------------------
+Process Group (0,): Slice ((0, 2), (0, 4)), Partial Info {}
+Process Group (1,): Slice ((2, 4), (0, 4)), Partial Info {}
+-----------------------------------------------------------------
+---------------------------- Initial State ----------------------------
+Process Group (0, 1): Slice [(0, 4), (0, 4)], Partial Info {}
+-----------------------------------------------------------------
+求sub_mesh,global_mesh_shape is [2],coords is [0],sub_process_ids is [0]
+求sub_mesh,global_mesh_shape is [2],coords is [1],sub_process_ids is [1]
+---------------------------- Processing Placement 0: Shard ----------------------------
+Process Group (0,): Slice ((0, 2), (0, 4)), Partial Info {}
+Process Group (1,): Slice ((2, 4), (0, 4)), Partial Info {}
+-----------------------------------------------------------------

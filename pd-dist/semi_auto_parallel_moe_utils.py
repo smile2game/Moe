@@ -129,26 +129,17 @@ class TestMoEUtils:
         )
 
     def test_reshard_mesh_shape_shard(self):
-        """
-        1. Shard维度扩展且冗余
-        [0,1], [Shard(0)] 2 --> [[0],[1]], [Shard(0), Shard(1)] 2x1
-        [[0],[1]], [Shard(0), Shard(1)] 2x2 --> [0,1], [Shard(0)] 4
-
-        2. 跨纬度mesh重排
-        [[0,1],[2,3]] 2x2 [Shard(0), Shard(1)] --> [[0,2],[1,3]],2x2 [Shard(1),Shard(0)]
-        """
-        print("**********shard_test************")
         (h, w) = (4, 4)
         src_shape = [h, w]
         x = paddle.arange(0, h * w).reshape(src_shape)
         dist_x = dist.shard_tensor(
-            x, self._mesh2x1, [dist.Shard(0), dist.Shard(1)] #[[0,1]] 2x1  
+            x, self._mesh1x2, [dist.Replicate(), dist.Shard(0)]  
         )
         dist_y = dist.reshard(
             dist_x, self._mesh2, [dist.Shard(0)]
         )
         assert dist_y.process_mesh == self._mesh2
-        print(f"reshard后,dist_x._local_value().numpy() is {dist_x._local_value().numpy()}\n dist_y._local_value().numpy() is {dist_x._local_value().numpy()}")
+        # print(f"reshard后,dist_x._local_value().numpy() is {dist_x._local_value().numpy()}\n dist_y._local_value().numpy() is {dist_x._local_value().numpy()}")
         np.testing.assert_array_equal(
             dist_x._local_value().numpy(), dist_y._local_value().numpy()
         )

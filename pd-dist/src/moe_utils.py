@@ -372,77 +372,110 @@ def _replace_dist_reshape_pass(dist_program):
             op.erase()
 
 
-def shard_submesh_and_slice(sub_mesh, tensor_slice, tensor_dim, mesh_dim, global_mesh_shape):
-    """沿指定网格维度切分 sub_mesh 和对应的张量切片
-    Args:
-        sub_mesh: 当前子网格的进程 ID 元组
-        tensor_slice: 当前张量的切片，格式为 [(start1, end1), (start2, end2), ...]
-        tensor_dim: 张量的切分维度
-        mesh_dim: 网格的切分维度
-        global_mesh_shape: 全局网格的形状
-    Returns:
-        new_sub_meshes: 切分后的子网格列表
-        new_slices: 切分后的张量切片列表
-    """
-    num_shards = global_mesh_shape[mesh_dim] #根据全局网格决定有几个shards
-    total_size = tensor_slice[tensor_dim][1] - tensor_slice[tensor_dim][0]
-    shard_size = total_size // num_shards  # 使用整除
+def get_sub_meshes_for_shard(sub_mesh, mesh_dim, global_mesh_shape):
+    # 将 sub_mesh 重塑为网格形状
+    process_ids = np.array(sub_mesh).reshape(global_mesh_shape)
+    num_shards = global_mesh_shape[mesh_dim]
     
-    # 确保 total_size 能被 num_shards 整除
-    if total_size % num_shards != 0:
-        raise ValueError(f"Tensor dimension {tensor_dim} size {total_size} cannot be evenly divided by {num_shards}")
-    
-    # 将 sub_mesh 转换为数组并重塑为网格形状的一部分
-    new_sub_meshes = []
-    new_slices = []
-
+    sub_meshes = []
     for i in range(num_shards):
-        # 简单假设：沿 mesh_dim 维度平均切分子网格
-        start_idx = i * (len(sub_mesh) // num_shards)
-        end_idx = (i + 1) * (len(sub_mesh) // num_shards)
-        new_sub_mesh = tuple(sub_mesh[start_idx:end_idx])
-        new_sub_meshes.append(new_sub_mesh)
+        # 按 mesh_dim 分片
+        coords = [slice(None)] * len(global_mesh_shape)
+        coords[mesh_dim] = i
+        sub_process_ids = process_ids[tuple(coords)].flatten().tolist()
+        print(f"求sub_mesh,global_mesh_shape is {global_mesh_shape},coords is {coords},sub_process_ids is {sub_process_ids}")
+        sub_meshes.append(tuple(sub_process_ids))
+    return sub_meshes
 
-        # 切分张量切片
-        new_slice = list(tensor_slice)
+def shard_submesh_and_slice(sub_mesh, tensor_slice, tensor_dim, mesh_dim, global_mesh_shape):
+    # 获取分片后的 sub_meshes
+    new_sub_meshes = get_sub_meshes_for_shard(sub_mesh, mesh_dim, global_mesh_shape)
+    num_shards = len(new_sub_meshes)
+    
+    # 分片 tensor 维度
+    total_size = tensor_slice[tensor_dim][1] - tensor_slice[tensor_dim][0]
+    shard_size = total_size // num_shards
+    if total_size % num_shards != 0:
+        raise ValueError(f"Tensor 维度 {tensor_dim} 的大小 {total_size} 不能被 {num_shards} 整除")
+    
+    new_slices = []
+    for i in range(num_shards):
         start = tensor_slice[tensor_dim][0] + i * shard_size
         end = start + shard_size
-        new_slice[tensor_dim] = (int(start), int(end))  # 强制转换为整数
+        new_slice = list(tensor_slice)
+        new_slice[tensor_dim] = (start, end)
         new_slices.append(tuple(new_slice))
+    
     return new_sub_meshes, new_slices
 
+
+
 def get_local_slices(tensor, mesh, placements):
-    """计算每个 rank 的本地张量切片
-    Args:
-        tensor: 张量实例
-        mesh: 处理器网格实例
-        placements: 切分策略列表
-    Returns:
-        rank_slices: 字典，键为 rank ID，值为对应的张量切片
-    """
-    sub_mesh2tensor_indices = {}
-    # 初始化：将整个张量分配给全局网格
-    initial_sub_mesh = tuple(mesh.process_ids)  # (0,1,2,3)
-    sub_mesh2tensor_indices[initial_sub_mesh] = [(0, s) for s in tensor.shape]
+    """计算本地 tensor slices，支持 Shard、Replicate 和 Partial。"""
+    if len(mesh.shape) != len(placements):
+        raise ValueError(f"placements 的数量 ({len(placements)}) 必须与网格维度 ({len(mesh.shape)}) 匹配")
+    
+    # 初始化，包含 mesh_shape
+    sub_mesh2tensor_indices = {
+        tuple(mesh.process_ids): {
+            'slice': [(0, s) for s in tensor.shape],
+            'partial': {},
+            'mesh_shape': list(mesh.shape)  # 跟踪网格形状
+        }
+    }
+    print("---------------------------- Initial State ----------------------------")
+    for sub_mesh, info in sub_mesh2tensor_indices.items():
+        print(f"Process Group {sub_mesh}: Slice {info['slice']}, Partial Info {info['partial']}")
+    print("-----------------------------------------------------------------")
 
-    # 迭代处理每个 placement
-    for idx, placement in enumerate(placements):
-        tensor_dim = placement.get_dim()  # 张量的切分维度
-        mesh_dim = idx % len(mesh.shape)  # mesh的切分维度
-
+    for mesh_dim, placement in enumerate(placements):
         new_sub_mesh2tensor_indices = {}
-        # 对当前所有的 sub_mesh 进行切分
-        for sub_mesh, tensor_slice in sub_mesh2tensor_indices.items():
-            #切分
-            new_sub_meshes, new_slices = shard_submesh_and_slice(
-                sub_mesh, tensor_slice, tensor_dim, mesh_dim, mesh.shape
-            )
-            #更新
-            for new_sub_mesh, new_slice in zip(new_sub_meshes, new_slices):
-                new_sub_mesh2tensor_indices[new_sub_mesh] = new_slice
+        
+        if placement.is_shard():
+            tensor_dim = placement.get_dim()
+            for sub_mesh, info in sub_mesh2tensor_indices.items():
+                new_sub_meshes, new_slices = shard_submesh_and_slice(
+                    sub_mesh, info['slice'], tensor_dim, mesh_dim, info['mesh_shape']
+                )
+                for new_sub_mesh, new_slice in zip(new_sub_meshes, new_slices):
+                    # 更新 mesh_shape
+                    new_mesh_shape = info['mesh_shape'].copy()
+                    new_mesh_shape[mesh_dim] = 1  # 分片后此维度大小变为 1
+                    new_sub_mesh2tensor_indices[new_sub_mesh] = {
+                        'slice': new_slice,
+                        'partial': info['partial'].copy(),
+                        'mesh_shape': new_mesh_shape
+                    }
+        elif hasattr(placement, 'is_partial') and placement.is_partial():
+            for sub_mesh, info in sub_mesh2tensor_indices.items():
+                new_partial = info['partial'].copy()
+                new_partial[mesh_dim] = placement.reduce_type
+                new_sub_mesh2tensor_indices[sub_mesh] = {
+                    'slice': info['slice'],
+                    'partial': new_partial,
+                    'mesh_shape': info['mesh_shape'].copy()
+                }
+        else:  # Replicate
+            for sub_mesh, info in sub_mesh2tensor_indices.items():
+                new_sub_mesh2tensor_indices[sub_mesh] = info.copy()
+        
         sub_mesh2tensor_indices = new_sub_mesh2tensor_indices
-        print(f"第{idx}刀, sub_mesh2tensor_indices is {sub_mesh2tensor_indices}")
+        print(f"---------------------------- Processing Placement {mesh_dim}: {type(placement).__name__} ----------------------------")
+        for sub_mesh, info in sub_mesh2tensor_indices.items():
+            print(f"Process Group {sub_mesh}: Slice {info['slice']}, Partial Info {info['partial']}")
+        print("-----------------------------------------------------------------")
     return sub_mesh2tensor_indices
+
+def get_rank2tensor_indices(sub_mesh2tensor_indices):
+    """Convert sub_mesh2tensor_indices to rank2tensor_indices."""
+    rank2tensor_indices = {}
+    for process_group, info in sub_mesh2tensor_indices.items():
+        for rank in process_group:
+            rank2tensor_indices[rank] = {
+                'slice': info['slice'],
+                'partial': info['partial']
+            }
+    return rank2tensor_indices
 
 def _only_reshard_mesh_shape(
     dist_tensor: Tensor, mesh: ProcessMesh, placements: list[Placement]
@@ -462,17 +495,9 @@ def _only_reshard_mesh_shape(
         )
     if src_mesh == mesh or src_mesh.process_ids != mesh.process_ids:
         return False
-
-    if src_placements[0].is_shard(): 
-        src_indices = get_local_slices(dist_tensor, src_mesh, src_placements)
-        dst_indices = get_local_slices(dist_tensor, mesh, placements)
-        if src_indices != dst_indices:
-            return False
-
-    if src_placements[0].is_partial():
-        for p in src_placements + placements:
-            if p != src_placements[0]:
-                return False
+    src_sub_mesh2tensor_indices = get_local_slices(dist_tensor, src_mesh, src_placements)
+    dst_sub_mesh2tensor_indices = get_local_slices(dist_tensor, mesh, placements)
+    if src_sub_mesh2tensor_indices != dst_sub_mesh2tensor_indices: return False
     return True
 
 
