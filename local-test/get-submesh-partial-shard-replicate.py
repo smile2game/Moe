@@ -39,93 +39,76 @@ class Tensor:
         self.process_mesh = process_mesh
         self.placements = placements
 
-# def get_1D_sub_process_mesh(process_mesh, mesh_dim):
-#     import numpy as np
-#     mesh_shape = process_mesh.shape
-#     dim_names = process_mesh.dim_names
-#     process_ids = np.array(process_mesh.process_ids).reshape(mesh_shape)
 
-#     rank_id = dist.get_rank()
-#     # FIXME (JZ-LIANG) Remove this hack to support any op mesh group for Pipeline Parallelism
-#     if rank_id not in process_mesh.process_ids:
-#         rank_id = process_mesh.process_ids[0]
-#     coord = list(np.where(process_ids == rank_id))
-#     coord[mesh_dim] = range(mesh_shape[mesh_dim])
-#     sub_process_ids = process_ids[tuple(coord)].flatten()
-#     sub_mesh_name = dim_names[mesh_dim]
-
-#     return dist.ProcessMesh(sub_process_ids, [sub_mesh_name])
-
-
-# def get_all_1D_sub_process_meshes(process_mesh, mesh_dim):
-#     """Get all 1D sub-meshes along a specific mesh_dim."""
-#     mesh_shape = process_mesh.shape
-#     process_ids = np.array(process_mesh.process_ids).reshape(mesh_shape)
-#     sub_meshes = []
-#     for coord_value in range(mesh_shape[mesh_dim]):
-#         coords = [slice(None)] * len(mesh_shape)
-#         coords[mesh_dim] = coord_value
-#         sub_process_ids = process_ids[tuple(coords)].flatten().tolist()
-#         sub_meshes.append(tuple(sub_process_ids))
-#     return sub_meshes
-def shard_submesh_and_slice(sub_mesh, tensor_slice, tensor_dim, mesh_dim, global_mesh_shape):
-    """Progressively shard sub-meshes and tensor slices."""
+def get_sub_meshes_for_shard(sub_mesh, mesh_dim, global_mesh_shape):
+    # 将 sub_mesh 重塑为网格形状
+    process_ids = np.array(sub_mesh).reshape(global_mesh_shape)
     num_shards = global_mesh_shape[mesh_dim]
+    
+    sub_meshes = []
+    for i in range(num_shards):
+        # 按 mesh_dim 分片
+        coords = [slice(None)] * len(global_mesh_shape)
+        coords[mesh_dim] = i
+        sub_process_ids = process_ids[tuple(coords)].flatten().tolist()
+        sub_meshes.append(tuple(sub_process_ids))
+    
+    return sub_meshes
+
+def shard_submesh_and_slice(sub_mesh, tensor_slice, tensor_dim, mesh_dim, global_mesh_shape):
+    """
+    沿着指定的 mesh_dim 和 tensor_dim 分片 sub_mesh 和 tensor slice。
+    
+    参数：
+        sub_mesh (tuple): 当前 sub_mesh 的进程 ID。
+        tensor_slice (list): 当前 tensor slice，格式为 [(start0, end0), (start1, end1), ...]。
+        tensor_dim (int): 要分片的 tensor 维度。
+        mesh_dim (int): 要分片的网格维度。
+        global_mesh_shape (list/tuple): 原始网格形状。
+    
+    返回：
+        tuple: (new_sub_meshes, new_slices)
+    """
+    # 获取分片后的 sub_meshes
+    new_sub_meshes = get_sub_meshes_for_shard(sub_mesh, mesh_dim, global_mesh_shape)
+    num_shards = len(new_sub_meshes)
+    
+    # 分片 tensor 维度
     total_size = tensor_slice[tensor_dim][1] - tensor_slice[tensor_dim][0]
     shard_size = total_size // num_shards
-    
     if total_size % num_shards != 0:
-        raise ValueError(f"Tensor dimension {tensor_dim} size {total_size} cannot be evenly divided by {num_shards}")
+        raise ValueError(f"Tensor 维度 {tensor_dim} 的大小 {total_size} 不能被 {num_shards} 整除")
     
-    sub_mesh_size = len(sub_mesh)
-    if sub_mesh_size % num_shards != 0:
-        raise ValueError(f"Sub-mesh size {sub_mesh_size} cannot be evenly divided by {num_shards}")
-    shard_mesh_size = sub_mesh_size // num_shards
-    
-    new_sub_meshes = []
     new_slices = []
-    
     for i in range(num_shards):
-        #需要不断mesh_dim += 1
-        """
-        [[[0,1],[2,3]],[[4,5],[6,7]]] [Replicate(),Shard(0),Shard(1)]
-        >> 1cut
-        sub_meshs = [[[0,1],[2,3]],[[4,5],[6,7]]]
-        >> 2cut 
-        sub_meshes =  ([[0,1],[2,3]]),  ([[[4,5],[6,7]])
-        >> 3cut
-        sub_meshes = ([])
-        """
-        start_idx = i * shard_mesh_size
-        end_idx = (i + 1) * shard_mesh_size
-        new_sub_mesh = tuple(sub_mesh[start_idx:end_idx])
-        new_sub_meshes.append(new_sub_mesh)
-        
-        new_slice = list(tensor_slice)
         start = tensor_slice[tensor_dim][0] + i * shard_size
         end = start + shard_size
-        new_slice[tensor_dim] = (int(start), int(end))
+        new_slice = list(tensor_slice)
+        new_slice[tensor_dim] = (start, end)
         new_slices.append(tuple(new_slice))
     
     return new_sub_meshes, new_slices
 
+
+
 def get_local_slices(tensor, mesh, placements):
-    """Compute local tensor slices, supporting Shard, Replicate, and Partial."""
+    """计算本地 tensor slices，支持 Shard、Replicate 和 Partial。"""
     if len(mesh.shape) != len(placements):
-        raise ValueError(f"Number of placements ({len(placements)}) must match mesh dimensions ({len(mesh.shape)})")
+        raise ValueError(f"placements 的数量 ({len(placements)}) 必须与网格维度 ({len(mesh.shape)}) 匹配")
     
+    # 初始化，包含 mesh_shape
     sub_mesh2tensor_indices = {
         tuple(mesh.process_ids): {
             'slice': [(0, s) for s in tensor.shape],
-            'partial': {}
+            'partial': {},
+            'mesh_shape': list(mesh.shape)  # 跟踪网格形状
         }
     }
-    
     print("---------------------------- Initial State ----------------------------")
     for sub_mesh, info in sub_mesh2tensor_indices.items():
         print(f"Process Group {sub_mesh}: Slice {info['slice']}, Partial Info {info['partial']}")
     print("-----------------------------------------------------------------")
-    
+
     for mesh_dim, placement in enumerate(placements):
         new_sub_mesh2tensor_indices = {}
         
@@ -133,12 +116,16 @@ def get_local_slices(tensor, mesh, placements):
             tensor_dim = placement.get_dim()
             for sub_mesh, info in sub_mesh2tensor_indices.items():
                 new_sub_meshes, new_slices = shard_submesh_and_slice(
-                    sub_mesh, info['slice'], tensor_dim, mesh_dim, mesh.shape
+                    sub_mesh, info['slice'], tensor_dim, mesh_dim, info['mesh_shape']
                 )
                 for new_sub_mesh, new_slice in zip(new_sub_meshes, new_slices):
+                    # 更新 mesh_shape
+                    new_mesh_shape = info['mesh_shape'].copy()
+                    new_mesh_shape[mesh_dim] = 1  # 分片后此维度大小变为 1
                     new_sub_mesh2tensor_indices[new_sub_mesh] = {
                         'slice': new_slice,
-                        'partial': info['partial'].copy()
+                        'partial': info['partial'].copy(),
+                        'mesh_shape': new_mesh_shape
                     }
         elif hasattr(placement, 'is_partial') and placement.is_partial():
             for sub_mesh, info in sub_mesh2tensor_indices.items():
@@ -146,18 +133,18 @@ def get_local_slices(tensor, mesh, placements):
                 new_partial[mesh_dim] = placement.reduce_type
                 new_sub_mesh2tensor_indices[sub_mesh] = {
                     'slice': info['slice'],
-                    'partial': new_partial
+                    'partial': new_partial,
+                    'mesh_shape': info['mesh_shape'].copy()
                 }
         else:  # Replicate
-            new_sub_mesh2tensor_indices = sub_mesh2tensor_indices.copy()
+            for sub_mesh, info in sub_mesh2tensor_indices.items():
+                new_sub_mesh2tensor_indices[sub_mesh] = info.copy()
         
         sub_mesh2tensor_indices = new_sub_mesh2tensor_indices
-        
         print(f"---------------------------- Processing Placement {mesh_dim}: {type(placement).__name__} ----------------------------")
         for sub_mesh, info in sub_mesh2tensor_indices.items():
             print(f"Process Group {sub_mesh}: Slice {info['slice']}, Partial Info {info['partial']}")
         print("-----------------------------------------------------------------")
-    
     return sub_mesh2tensor_indices
 
 
@@ -174,19 +161,43 @@ def get_rank2tensor_indices(sub_mesh2tensor_indices):
 
 # Test Examples
 if __name__ == "__main__":
-    # Example 1: 2D Tensor, 2D Mesh, Two Shard(0)
+    #origin
     dist_tensor = Tensor(
-        shape=[4, 4],
-        process_mesh=ProcessMesh(
-            shape=[2, 2,2],
-            process_ids=[0, 1, 2, 3,4,5,6,7],
-            dim_names=['x', 'y','z']
-        ),
-        placements=[Replicate(),Shard(0),Shard(1)]
+    shape=[4, 4],
+    process_mesh=ProcessMesh(
+        shape=[2, 2],
+        process_ids=[0, 1, 2, 3],
+        dim_names=['x', 'y']
+    ),
+    placements=[Replicate(),Shard(0)]
     )
 
     print("---------------------------- Example - Two Shard(0) ----------------------------")
     sub_mesh2tensor_indices = get_local_slices(dist_tensor, dist_tensor.process_mesh, dist_tensor.placements)
+
+    # print("\nFinal sub_mesh2tensor_indices:")
+    # for process_ids, info in sub_mesh2tensor_indices.items():
+    #     print(f"Process Group {process_ids}: Slice {info['slice']}, Partial Info {info['partial']}")
+    
+    # rank2tensor_indices = get_rank2tensor_indices(sub_mesh2tensor_indices)
+    # print("\n---------------------------- rank2tensor_indices ----------------------------")
+    # for rank, info in rank2tensor_indices.items():
+    #     print(f"Rank {rank}: Slice {info['slice']}, Partial Info {info['partial']}")
+
+
+    # Example 1: 2D Tensor, 2D Mesh, Two Shard(0)
+    # dist_tensor = Tensor(
+    #     shape=[4, 4],
+    #     process_mesh=ProcessMesh(
+    #         shape=[2, 2,2],
+    #         process_ids=[0, 1, 2, 3,4,5,6,7],
+    #         dim_names=['x', 'y','z']
+    #     ),
+    #     placements=[Replicate(),Shard(0),Shard(1)]
+    # )
+
+    # print("---------------------------- Example - Two Shard(0) ----------------------------")
+    # sub_mesh2tensor_indices = get_local_slices(dist_tensor, dist_tensor.process_mesh, dist_tensor.placements)
 
 
     
