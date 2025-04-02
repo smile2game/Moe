@@ -39,30 +39,30 @@ class Tensor:
         self.process_mesh = process_mesh
         self.placements = placements
 
-
+#获取sub_mesh,思路类似get_1D_sub_process_mesh
 def get_sub_meshes_for_shard(sub_mesh, mesh_dim, global_mesh_shape):
     # 将 sub_mesh 重塑为网格形状
     process_ids = np.array(sub_mesh).reshape(global_mesh_shape)
     num_shards = global_mesh_shape[mesh_dim]
     
     sub_meshes = []
-    for i in range(num_shards):
+    for i in range(num_shards): #分块获取
         # 按 mesh_dim 分片
         coords = [slice(None)] * len(global_mesh_shape)
         coords[mesh_dim] = i
-        sub_process_ids = process_ids[tuple(coords)].flatten().tolist()
+        sub_process_ids = process_ids[tuple(coords)].flatten().tolist() #根据切片去提取sub_process，flatten + tolist 为列表
         print(f"求sub_mesh,global_mesh_shape is {global_mesh_shape},coords is {coords},sub_process_ids is {sub_process_ids}")
         sub_meshes.append(tuple(sub_process_ids))
     return sub_meshes
-
-def shard_submesh_and_slice(sub_mesh, tensor_slice, tensor_dim, mesh_dim, global_mesh_shape):
+#调用获取sub_mesh，求解slice。 传入的global_mesh_shape其实是info中存储的mesh_shape，分片后此维度大小变为 1,也就是切开了，来解决连续的shard问题
+def shard_submesh_and_slice(sub_mesh, tensor_slice, tensor_dim, mesh_dim, global_mesh_shape): 
     # 获取分片后的 sub_meshes
     new_sub_meshes = get_sub_meshes_for_shard(sub_mesh, mesh_dim, global_mesh_shape)
     num_shards = len(new_sub_meshes)
     
     # 分片 tensor 维度
-    total_size = tensor_slice[tensor_dim][1] - tensor_slice[tensor_dim][0]
-    shard_size = total_size // num_shards
+    total_size = tensor_slice[tensor_dim][1] - tensor_slice[tensor_dim][0] #终点-起点
+    shard_size = total_size // num_shards #一片shard的长度
     if total_size % num_shards != 0:
         raise ValueError(f"Tensor 维度 {tensor_dim} 的大小 {total_size} 不能被 {num_shards} 整除")
     
@@ -93,26 +93,26 @@ def get_local_slices(tensor, mesh, placements):
     }
     print("---------------------------- Initial State ----------------------------")
     for sub_mesh, info in sub_mesh2tensor_indices.items():
-        print(f"Process Group {sub_mesh}: Slice {info['slice']}, Partial Info {info['partial']}")
-    print("-----------------------------------------------------------------")
+        print(f"Process Group {sub_mesh}: Slice {info['slice']}, Partial Info {info['partial']}\n")
+    # print("-----------------------------------------------------------------")
 
     for mesh_dim, placement in enumerate(placements):
         new_sub_mesh2tensor_indices = {}
         
-        if placement.is_shard():
-            tensor_dim = placement.get_dim()
-            for sub_mesh, info in sub_mesh2tensor_indices.items():
-                new_sub_meshes, new_slices = shard_submesh_and_slice(
+        if placement.is_shard(): #主要是处理这个
+            tensor_dim = placement.get_dim() #切张量的0维
+            for sub_mesh, info in sub_mesh2tensor_indices.items(): #info是这个字典。 现在要 对每个 sub_mesh迭代一次了,也就是说 shard_submesh_and_slice要循环调用
+                new_sub_meshes, new_slices = shard_submesh_and_slice( 
                     sub_mesh, info['slice'], tensor_dim, mesh_dim, info['mesh_shape']
                 )
                 for new_sub_mesh, new_slice in zip(new_sub_meshes, new_slices):
                     # 更新 mesh_shape
                     new_mesh_shape = info['mesh_shape'].copy()
-                    new_mesh_shape[mesh_dim] = 1  # 分片后此维度大小变为 1
+                    new_mesh_shape[mesh_dim] = 1  # 分片后此维度大小变为 1,更新mesh_shape
                     new_sub_mesh2tensor_indices[new_sub_mesh] = {
-                        'slice': new_slice,
+                        'slice': new_slice, #更新slice
                         'partial': info['partial'].copy(),
-                        'mesh_shape': new_mesh_shape
+                        'mesh_shape': new_mesh_shape 
                     }
         elif hasattr(placement, 'is_partial') and placement.is_partial():
             for sub_mesh, info in sub_mesh2tensor_indices.items():
@@ -216,25 +216,3 @@ if __name__ == "__main__":
     
 
 
-
-    # # Example 2: Including Partial with Corrected Mesh
-    # dist_tensor_partial = Tensor(
-    #     shape=[4, 4],
-    #     process_mesh=ProcessMesh(
-    #         shape=[1, 2, 2, 1],
-    #         process_ids=[0, 1, 2, 3],
-    #         dim_names=['x', 'y', 'z', 't']
-    #     ),
-    #     placements=[Replicate(), Shard(1), Replicate(), Partial()]
-    # )
-    # print("\n---------------------------- Example - Including Partial ----------------------------")
-    # sub_mesh2tensor_indices_partial = get_local_slices(dist_tensor_partial, dist_tensor_partial.process_mesh, dist_tensor_partial.placements)
-    
-    # print("\nFinal sub_mesh2tensor_indices:")
-    # for process_ids, info in sub_mesh2tensor_indices_partial.items():
-    #     print(f"Process Group {process_ids}: Slice {info['slice']}, Partial Info {info['partial']}")
-    
-    # rank2tensor_indices_partial = get_rank2tensor_indices(sub_mesh2tensor_indices_partial)
-    # print("\n---------------------------- rank2tensor_indices ----------------------------")
-    # for rank, info in rank2tensor_indices_partial.items():
-    #     print(f"Rank {rank}: Slice {info['slice']}, Partial Info {info['partial']}")
