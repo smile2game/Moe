@@ -205,14 +205,14 @@ if __name__ == "__main__":
 
 
     
-    # print("\nFinal sub_mesh2tensor_indices:")
-    # for process_ids, info in sub_mesh2tensor_indices.items():
-    #     print(f"Process Group {process_ids}: Slice {info['slice']}, Partial Info {info['partial']}")
+    print("\nFinal sub_mesh2tensor_indices:")
+    for process_ids, info in sub_mesh2tensor_indices.items():
+        print(f"Process Group {process_ids}: Slice {info['slice']}, Partial Info {info['partial']}")
     
-    # rank2tensor_indices = get_rank2tensor_indices(sub_mesh2tensor_indices)
-    # print("\n---------------------------- rank2tensor_indices ----------------------------")
-    # for rank, info in rank2tensor_indices.items():
-    #     print(f"Rank {rank}: Slice {info['slice']}, Partial Info {info['partial']}")
+    rank2tensor_indices = get_rank2tensor_indices(sub_mesh2tensor_indices)
+    print("\n---------------------------- rank2tensor_indices ----------------------------")
+    for rank, info in rank2tensor_indices.items():
+        print(f"Rank {rank}: Slice {info['slice']}, Partial Info {info['partial']}")
     
 
 
